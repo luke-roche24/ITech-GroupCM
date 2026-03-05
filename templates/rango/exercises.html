@@ -1,0 +1,92 @@
+
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FitTrack — Your Exercises</title>
+  <link rel="stylesheet" href="{% static 'CSS/styles.css' %}" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">FITTRACK</div>
+      <nav class="nav">
+        <div class="nav-group"><strong>Main</strong>
+          <a href="/rango/dashboard/" class="nav-link">Dashboard</a>
+          <a href="/rango/exercises/" class="nav-link">Your Exercises</a>
+          <a href="/rango/current/" class="nav-link">Current Plan</a>
+        </div>
+        <div class="nav-group"><strong>Progress</strong>
+          <a href="#">Trends</a>
+          <a href="#">Personal Bests</a>
+        </div>
+        <div class="nav-group"><strong>Friends</strong>
+          <a href="#">Friends List</a>
+          <a href="#">Workouts</a>
+        </div>
+        <div class="nav-group"><strong>Account</strong>
+          <a href="#">Profile</a>
+          <a href="#">Settings</a>
+          <a href="#">Logout</a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <h1>Your Exercises</h1>
+        <div class="username">&nbsp;</div>
+      </header>
+
+      <main class="content">
+        <div class="exercises-grid">
+          <div class="ex-list">
+            <div class="search">Search bar</div>
+            <div class="group">Legs</div>
+            <ul class="items">
+              <li>Back Squat</li>
+              <li>Bulgarian Split Squat</li>
+              <li>Goblet Squat</li>
+              <li>Walking Lunges</li>
+            </ul>
+            <div class="group">Arms</div>
+            <ul class="items">
+              <li>Cable Curls</li>
+              <li>Tricep Pulldowns</li>
+            </ul>
+            <div class="group">Chest</div>
+            <ul class="items">
+              <li class="selected">Barbell Bench Press</li>
+              <li>Cable Flyes</li>
+              <li>Press-Ups</li>
+            </ul>
+          </div>
+
+          <div class="forms">
+            <div class="card form-card">
+              <h2>Add Exercise</h2>
+              <label>Name:</label><input type="text" placeholder="Text Box" />
+              <label>B.Part:</label><input type="text" placeholder="Text Box" />
+              <label>Increment:</label>
+              <div class="increment"><input type="number" value="5" /> <div class="spin">▲<br/>▼</div></div>
+              <button class="btn save">Save</button>
+            </div>
+
+            <div class="card form-card">
+              <h2>Edit - Barbell Bench Press</h2>
+              <label>Name:</label><input type="text" placeholder="Text Box" />
+              <label>B.Part:</label><input type="text" placeholder="Text Box" />
+              <label>Increment:</label>
+              <div class="increment"><input type="number" value="5" /> <div class="spin">▲<br/>▼</div></div>
+              <button class="btn update">Update</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

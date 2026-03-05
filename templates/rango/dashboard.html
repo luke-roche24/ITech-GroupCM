@@ -1,0 +1,69 @@
+<!-- File: dashboard.html -->
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FitTrack — Dashboard</title>
+  <link rel="stylesheet" href="{% static 'CSS/styles.css' %}" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">FITTRACK</div>
+      <nav class="nav">
+        <div class="nav-group"><strong>Main</strong>
+          <a href="/rango/dashboard/" class="nav-link">Dashboard</a>
+          <a href="/rango/exercises/" class="nav-link">Your Exercises</a>
+          <a href="/rango/current/" class="nav-link">Current Plan</a>
+        </div>
+        <div class="nav-group"><strong>Progress</strong>
+          <a href="#">Trends</a>
+          <a href="#">Personal Bests</a>
+        </div>
+        <div class="nav-group"><strong>Friends</strong>
+          <a href="#">Friends List</a>
+          <a href="#">Workouts</a>
+        </div>
+        <div class="nav-group"><strong>Account</strong>
+          <a href="#">Profile</a>
+          <a href="#">Settings</a>
+          <a href="#">Logout</a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <h1>Hi, [Username]</h1>
+        <div class="username">&nbsp;</div>
+      </header>
+
+      <main class="content">
+        <div class="grid-2x2">
+          <div class="card large">Current Workout Schedule</div>
+          <div class="card large">Exercise Trends</div>
+          <div class="card large">Log Session</div>
+          <div class="card large">Recent Friends Workouts</div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
