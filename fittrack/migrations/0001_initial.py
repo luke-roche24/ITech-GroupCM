@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=128)),
                 ('url', models.URLField()),
                 ('views', models.ImageField(default=0, upload_to='')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.Category')),
+                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.Category')),
             ],
         ),
     ]

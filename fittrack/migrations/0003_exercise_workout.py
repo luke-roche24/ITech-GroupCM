@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rango', '0002_auto_20260304_1231'),
+        ('fittrack', '0002_auto_20260304_1231'),
     ]
 
     operations = [
@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=35)),
                 ('body_part', models.CharField(max_length=25)),
-                ('ownerid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.User')),
+                ('ownerid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.User')),
             ],
         ),
         migrations.CreateModel(
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=35)),
-                ('ownerid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.User')),
+                ('ownerid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.User')),
             ],
         ),
     ]

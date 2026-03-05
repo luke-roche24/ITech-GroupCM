@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rango', '0003_exercise_workout'),
+        ('fittrack', '0003_exercise_workout'),
     ]
 
     operations = [
@@ -16,8 +16,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('status', models.BooleanField(default=False)),
-                ('userid_a', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='friendships_initiated', to='rango.User')),
-                ('userid_b', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='friendships_received', to='rango.User')),
+                ('userid_a', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='friendships_initiated', to='fittrack.User')),
+                ('userid_b', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='friendships_received', to='fittrack.User')),
             ],
         ),
         migrations.CreateModel(
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('weight', models.DecimalField(decimal_places=1, max_digits=5)),
                 ('duration', models.SmallIntegerField()),
                 ('failure', models.BooleanField()),
-                ('exerciseid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.Exercise')),
+                ('exerciseid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.Exercise')),
             ],
         ),
         migrations.CreateModel(
@@ -39,8 +39,8 @@ class Migration(migrations.Migration):
                 ('order', models.SmallIntegerField()),
                 ('sets', models.SmallIntegerField()),
                 ('reps', models.SmallIntegerField()),
-                ('exerciseid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.Exercise')),
-                ('workoutid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.Workout')),
+                ('exerciseid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.Exercise')),
+                ('workoutid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.Workout')),
             ],
         ),
         migrations.CreateModel(
@@ -48,13 +48,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('date', models.DateTimeField(auto_now_add=True)),
-                ('userid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.User')),
-                ('workoutid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.Workout')),
+                ('userid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.User')),
+                ('workoutid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.Workout')),
             ],
         ),
         migrations.AddField(
             model_name='setlog',
             name='sessionid',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rango.WorkoutSession'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fittrack.WorkoutSession'),
         ),
     ]

@@ -1,11 +1,11 @@
 # populate_rango.py
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tango_with_django_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'webapp_project.settings')
 
 import django
 django.setup()
 
-import rango.models as m
+import fittrack.models as m
 from django.utils import timezone
 
 
