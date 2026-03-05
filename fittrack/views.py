@@ -21,3 +21,15 @@ def current(request):
 def exercises(request):
     context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
     return render(request, 'fittrack/exercises.html', context=context_dict)
+
+def friends(request):
+    context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
+    return render(request, 'fittrack/friends.html', context=context_dict)
+
+def progress(request):
+    context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
+    return render(request, 'fittrack/progress.html', context=context_dict)
+
+def workouts(request):
+    context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
+    return render(request, 'fittrack/workouts.html', context=context_dict)
