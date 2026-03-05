@@ -1,6 +1,6 @@
 from django.urls import path
-from rango import views
-app_name = 'rango'
+from fittrack import views
+app_name = 'fittrack'
 
 urlpatterns = [
     path('', views.index, name='index'),

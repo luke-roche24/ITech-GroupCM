@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class RangoConfig(AppConfig):
-    name = 'rango'
+class FittrackConfig(AppConfig):
+    name = 'fittrack'

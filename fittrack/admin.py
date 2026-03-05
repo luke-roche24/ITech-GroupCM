@@ -1,5 +1,5 @@
 from django.contrib import admin
-import rango.models as m
+import fittrack.models as m
 # Register your models here.
 
 admin.site.register(m.Category)
