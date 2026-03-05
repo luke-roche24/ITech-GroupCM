@@ -57,7 +57,7 @@ db.sqlite3-journal
 /media/
 uploads/
 # If you collect static files into a folder for deployment, ignore it:
-staticfiles/
+#staticfiles/
 
 # Secrets / environment variables
 .env
