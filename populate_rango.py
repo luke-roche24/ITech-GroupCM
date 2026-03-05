@@ -10,52 +10,45 @@ from django.utils import timezone
 
 
 def populate():
-    python_pages = [
-        {'title': 'Official Python Tutorial', 'url': 'http://docs.python.org/3/tutorial/'},
-        {'title': 'How To Think Like a Computer Scientist', 'url': 'http://www.greenteapress.com/thinkpython/'},
-        {'title': 'A Python Tutorial (Korokithakis)', 'url': 'http://www.korokithakis.net/tutorials/python/'}
+    exercises = [
+        {'id': '1', 'ownerid': '1', 'name': 'Bench Press', 'body_part': 'Chest'}
     ]
 
-    django_pages = [
-        {'title': 'Official Django Tutorial', 'url': 'https://docs.djangoproject.com/en/2.1/intro/tutorial01/'},
-        {'title': 'DjangoRocks', 'url': 'http://www.djangorocks.com/'},
-        {'title': 'How to Tango with Django', 'url': 'http://www.tangowithdjango.com/'}
+    users = [
+        {'id': '1', 'username': 'lukeroche', 'password': '1234'}
     ]
 
-    other_pages = [
-        {'title': 'Bottle', 'url': 'http://bottlepy.org/docs/dev/'},
-        {'title': 'Flask', 'url': 'http://flask.pocoo.org'}
-    ]
+    user = users[0]
+    u = add_user(user['id'], user['username'], user['password'])
 
-    cats = {
-        'Python': {'pages': python_pages},
-        'Django': {'pages': django_pages},
-        'OtherFrameworks': {'pages': other_pages}
-    }
+    for e in exercises:
+        add_exercise(e['id'], u, e['name'], e['body_part'])
 
-    for cat_name, cat_data in cats.items():
-        c = add_cat(cat_name)
-        for p in cat_data['pages']:
-            add_page(c, p['title'], p['url'])
+    
+
 
     # print out what we added
-    for c in m.Category.objects.all():
-        for p in m.Page.objects.filter(category=c):
-            print(f'- {c.name}: {p.title} ({p.url})')
+    #for e in m.Exercise.objects.all():
+    #    add_exercise(e['id'], u, e['name'], e['body_part'])
 
 
-def add_page(cat, title, url, views=0):
-    p, created = m.Page.objects.get_or_create(category=cat, title=title)
-    p.url = url
-    p.views = views
-    p.save()
-    return p
+def add_exercise(id, oid, name, body_part):
+    e, created = m.Exercise.objects.get_or_create(id=id, ownerid=oid, name=name, body_part=body_part)
+    e.id = id
+    e.ownerid = oid
+    e.name = name
+    e.body_part = body_part
+    e.save()
+    return e
 
+def add_user(id, name, pw):
+    u, created = m.User.objects.get_or_create(id=id, username=name, password=pw)
+    u.id = id
+    u.username = name
+    u.password = pw
+    u.save()
+    return u
 
-def add_cat(name):
-    c, created = m.Category.objects.get_or_create(name=name)
-    c.save()
-    return c
 
 
 if __name__ == '__main__':

@@ -42,12 +42,16 @@
           <div class="ex-list">
             <div class="search">Search bar</div>
             <div class="group">Legs</div>
-            <ul class="items">
-              <li>Back Squat</li>
-              <li>Bulgarian Split Squat</li>
-              <li>Goblet Squat</li>
-              <li>Walking Lunges</li>
-            </ul>
+            {% if exercises %}
+              <ul class="items">
+              {% for exercise in exercises %}  
+                <li>{{ exercise.name }}</li>
+              {% endfor %}
+              </ul>
+            {% else %}
+              <strong>There are no exercises stored.</strong>
+            {% endif %}
+
             <div class="group">Arms</div>
             <ul class="items">
               <li>Cable Curls</li>

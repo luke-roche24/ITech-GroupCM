@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from fittrack.models import Exercise
 
 def index(request):
     context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
@@ -19,7 +20,9 @@ def current(request):
     return render(request, 'fittrack/current.html', context=context_dict)
 
 def exercises(request):
+    exercise_list = Exercise.objects.order_by('name')[:5]
     context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
+    context_dict['exercises'] = exercise_list
     return render(request, 'fittrack/exercises.html', context=context_dict)
 
 def friends(request):
