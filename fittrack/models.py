@@ -18,7 +18,15 @@ class Page(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+"""Each of the classes below this represent a table in the database that is
+required for the program to work.
+In each class, each variable represents an entity in the table.
+e.g. A User has an id, a username and a password.
+Tango with django chapter 5: 5.1 - 5.6
+"""
+
+
 class User(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=20, unique=True)

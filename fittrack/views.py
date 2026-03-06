@@ -11,6 +11,9 @@ def about(request):
     context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
     return render(request, 'fittrack/about.html', context=context_dict)
 
+"""Each class in this file creates a view for each html file.
+Tango with Django chapter 3.5
+"""
 def dashboard(request):
     context_dict = {'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!'}
     return render(request, 'fittrack/dashboard.html', context=context_dict)
