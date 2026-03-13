@@ -1,0 +1,116 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+{% block title %}FitTrack - Register{% endblock %}
+{% block extra_css %}
+<style>
+    .auth-wrapper { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; position:relative; }
+    .auth-wrapper::before { content:''; position:fixed; inset:0; background-image:linear-gradient(rgba(0,230,118,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,118,0.015) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; }
+    .auth-card { width:100%; max-width:400px; position:relative; z-index:1; background:#161616; border:1px solid #262626; border-radius:16px; overflow:hidden; }
+    .auth-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#00e676,transparent); }
+    .auth-close { position:absolute; top:1rem; right:1rem; width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,0.04); border:1px solid #2a2a2a; display:flex; align-items:center; justify-content:center; color:#666; text-decoration:none; transition:all 0.2s; font-size:1rem; z-index:2; }
+    .auth-close:hover { background:rgba(255,255,255,0.08); color:#ccc; }
+    .auth-body { padding:2rem; }
+    .auth-brand { text-align:center; margin-bottom:1.5rem; }
+    .auth-brand a { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:5px; color:#00e676; text-decoration:none; }
+    .auth-title { text-align:center; font-size:1.2rem; font-weight:600; color:#f0f0f0; margin-bottom:1.5rem; }
+    .auth-label { display:block; font-size:0.8rem; font-weight:500; color:#888; margin-bottom:0.35rem; }
+    .auth-label .optional { color:#444; font-weight:400; }
+    .auth-card .form-control { width:100%!important; padding:0.65rem 0.85rem!important; background:rgba(255,255,255,0.06)!important; border:1px solid #333!important; border-radius:8px!important; color:#f0f0f0!important; font-size:0.9rem!important; font-family:'Outfit',sans-serif!important; transition:all 0.2s; box-sizing:border-box; }
+    .auth-card .form-control::placeholder { color:#555!important; }
+    .auth-card .form-control:focus { outline:none; border-color:#00e676!important; background:rgba(255,255,255,0.08)!important; box-shadow:0 0 0 3px rgba(0,230,118,0.1)!important; }
+    .auth-card select.form-control { appearance:auto; -webkit-appearance:auto; }
+    .auth-card select.form-control option { background:#1a1a1a; color:#f0f0f0; }
+    .auth-group { margin-bottom:1rem; }
+    .pw-wrapper { position:relative; }
+    .pw-wrapper .form-control { padding-right:2.8rem!important; }
+    .pw-toggle { position:absolute; right:0.7rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#555; cursor:pointer; padding:0.2rem; font-size:1rem; transition:color 0.2s; }
+    .pw-toggle:hover { color:#00e676; }
+    .auth-hint { font-size:0.72rem; color:#555; margin-top:0.35rem; line-height:1.5; }
+    .auth-hint i { color:#00e676; margin-right:0.2rem; font-size:0.65rem; }
+    .auth-section-label { font-size:0.7rem; color:#444; text-transform:uppercase; letter-spacing:1.5px; margin:1.2rem 0 0.8rem; padding-top:1rem; border-top:1px solid #222; }
+    .auth-submit { width:100%; padding:0.7rem; background:#00e676; color:#000; border:none; border-radius:8px; font-weight:600; font-size:0.9rem; letter-spacing:1px; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s; margin-top:0.5rem; }
+    .auth-submit:hover { background:#00c853; transform:translateY(-1px); }
+    .auth-divider { border:none; border-top:1px solid #262626; margin:1.2rem 0; }
+    .auth-footer { text-align:center; font-size:0.85rem; color:#555; }
+    .auth-footer a { color:#00e676; text-decoration:none; font-weight:600; }
+    .auth-error { background:rgba(255,82,82,0.08); border:1px solid rgba(255,82,82,0.15); border-radius:8px; padding:0.5rem 0.8rem; color:#ff8a80; font-size:0.83rem; margin-bottom:1rem; }
+    .auth-error div { margin-bottom:0.15rem; }
+    .auth-error div:last-child { margin-bottom:0; }
+    .helptext,.form-text { font-size:0.72rem!important; color:#444!important; margin-top:0.3rem; }
+    .helptext ul { margin:0.2rem 0 0; padding-left:1rem; }
+</style>
+{% endblock %}
+{% block auth_content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <a href="{% url 'fittrack:index' %}" class="auth-close" aria-label="Back to home"><i class="bi bi-x-lg"></i></a>
+        <div class="auth-body">
+            <div class="auth-brand"><a href="{% url 'fittrack:index' %}">FITTRACK</a></div>
+            <div class="auth-title">Create your account</div>
+            {% if form.errors %}
+            <div class="auth-error">
+                {% for field, errors in form.errors.items %}{% for error in errors %}<div>{{ error }}</div>{% endfor %}{% endfor %}
+            </div>
+            {% endif %}
+            <form method="POST" action="{% url 'fittrack:register' %}">
+                {% csrf_token %}
+                <div class="auth-group">
+                    <label class="auth-label" for="id_username">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_email">Email <span class="optional">(optional)</span></label>
+                    {{ form.email }}
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_password">Password</label>
+                    <div class="pw-wrapper">
+                        {{ form.password }}
+                        <button type="button" class="pw-toggle" onclick="togglePw('id_password', this)" aria-label="Show password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="auth-hint"><i class="bi bi-info-circle"></i> At least 8 characters, not too common, can't be all numbers</div>
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_password_confirm">Confirm Password</label>
+                    <div class="pw-wrapper">
+                        {{ form.password_confirm }}
+                        <button type="button" class="pw-toggle" onclick="togglePw('id_password_confirm', this)" aria-label="Show password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="auth-section-label">Security Question (for password recovery)</div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_security_question">Security Question</label>
+                    {{ form.security_question }}
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_security_answer">Your Answer</label>
+                    {{ form.security_answer }}
+                    <div class="auth-hint"><i class="bi bi-shield-lock"></i> Used to reset your password if you forget it</div>
+                </div>
+                <button type="submit" class="auth-submit">CREATE ACCOUNT</button>
+            </form>
+            <hr class="auth-divider">
+            <div class="auth-footer">Already have an account? <a href="{% url 'fittrack:login' %}">Login</a></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function togglePw(id, btn) {
+    const input = document.getElementById(id);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye';
+    }
+}
+</script>
+{% endblock %}

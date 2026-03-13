@@ -1,22 +1,267 @@
-<!DOCTYPE html>
+{% extends 'fittrack/base.html' %}
+{% load static %}
 
-{% load staticfiles %}
+{% block title %}FitTrack — Track. Build. Progress.{% endblock %}
 
-<html>
-    <head>
-        <title>Rango</title>
-    </head>
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    html, body { margin: 0; padding: 0; overflow-x: hidden; background: #0a0a0a; }
 
-    <body>
-        <h1>Rango says...</h1>
-        <div>
-            hey there partner! <br />
-            <strong>{{ boldmessage }}</strong><br />
+    /* ── Nav ── */
+    .landing-nav {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+        padding: 1rem 3rem; display: flex; justify-content: space-between; align-items: center;
+        background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+    }
+    .landing-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 5px; color: #00e676; text-decoration: none; }
+    .landing-nav-links { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-btn { text-decoration: none; padding: 0.45rem 1.2rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; transition: all 0.2s; }
+    .nav-btn-ghost { color: rgba(255,255,255,0.5); }
+    .nav-btn-ghost:hover { color: #fff; }
+    .nav-btn-accent { background: #00e676; color: #000; font-weight: 600; }
+    .nav-btn-accent:hover { background: #00c853; color: #000; }
+
+    .landing-alert { position: fixed; top: 58px; left: 50%; transform: translateX(-50%); z-index: 99; min-width: 280px; text-align: center; }
+    .landing-alert .alert { background: rgba(20,20,20,0.92); backdrop-filter: blur(12px); border: 1px solid rgba(0,230,118,0.2); color: #00e676; border-radius: 10px; font-size: 0.83rem; padding: 0.5rem 1.3rem; }
+
+    /* ── Hero ── */
+    .hero {
+        position: relative; width: 100vw; min-height: 100vh;
+        display: grid; grid-template-columns: 1fr 1fr;
+        overflow: hidden; background: #0a0a0a;
+    }
+
+    /* Left - text side */
+    .hero-left {
+        position: relative; z-index: 10;
+        display: flex; flex-direction: column; justify-content: center;
+        padding: 7rem 4rem 3rem 5rem;
+    }
+
+    /* Subtle grid on left side */
+    .hero-left::before {
+        content: ''; position: absolute; inset: 0;
+        background-image:
+            linear-gradient(rgba(0,230,118,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,230,118,0.02) 1px, transparent 1px);
+        background-size: 50px 50px; pointer-events: none;
+    }
+
+    /* Right - image side with diagonal cut */
+    .hero-right {
+        position: relative; overflow: hidden;
+    }
+
+    .hero-right img {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover; object-position: center 20%;
+        filter: brightness(0.7) contrast(1.15) saturate(0.85);
+    }
+
+    /* Diagonal cut overlay: dark side bleeds into image */
+    .hero-diagonal {
+        position: absolute; top: 0; left: -1px; bottom: 0;
+        width: 180px; z-index: 2;
+        background: linear-gradient(to right, #0a0a0a 0%, transparent 100%);
+        clip-path: polygon(0 0, 100% 8%, 60% 100%, 0 100%);
+    }
+
+    /* Green accent slash across the diagonal */
+    .hero-slash {
+        position: absolute; top: 0; left: 80px; bottom: 0;
+        width: 3px; z-index: 3;
+        background: linear-gradient(180deg, transparent 10%, rgba(0,230,118,0.4) 40%, rgba(0,230,118,0.4) 60%, transparent 90%);
+        transform: skewX(-8deg);
+    }
+
+    /* Bottom gradient on image */
+    .hero-right::after {
+        content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+        height: 200px; z-index: 2;
+        background: linear-gradient(to top, #0a0a0a, transparent);
+    }
+
+    /* Top gradient on image */
+    .hero-right-top {
+        position: absolute; top: 0; left: 0; right: 0;
+        height: 120px; z-index: 2;
+        background: linear-gradient(to bottom, rgba(10,10,10,0.6), transparent);
+    }
+
+    /* Green glow on image */
+    .hero-glow {
+        position: absolute; top: 35%; left: 20%;
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(0,230,118,0.07) 0%, transparent 70%);
+        z-index: 2; pointer-events: none;
+    }
+
+    /* ── Content animations ── */
+    .fade-up {
+        opacity: 0; transform: translateY(30px);
+        animation: fadeUp 0.8s ease forwards;
+    }
+    .fade-up-d1 { animation-delay: 0.1s; }
+    .fade-up-d2 { animation-delay: 0.25s; }
+    .fade-up-d3 { animation-delay: 0.4s; }
+    .fade-up-d4 { animation-delay: 0.55s; }
+    .fade-up-d5 { animation-delay: 0.7s; }
+
+    @keyframes fadeUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-tag {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: rgba(0,230,118,0.06); border: 1px solid rgba(0,230,118,0.15);
+        border-radius: 50px; padding: 0.35rem 0.9rem;
+        font-size: 0.68rem; font-weight: 500;
+        letter-spacing: 2.5px; text-transform: uppercase;
+        color: #00e676; margin-bottom: 1.8rem; width: fit-content;
+    }
+    .hero-tag .dot { width: 5px; height: 5px; border-radius: 50%; background: #00e676; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+    .hero-heading {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(3.2rem, 6vw, 5.5rem);
+        line-height: 0.95; letter-spacing: 2px;
+        color: #fff; margin-bottom: 1.3rem;
+    }
+    .hero-heading .accent { color: #00e676; }
+    .hero-heading .outline {
+        color: transparent;
+        -webkit-text-stroke: 1.5px rgba(255,255,255,0.3);
+    }
+
+    .hero-sub {
+        font-size: 1rem; font-weight: 300; line-height: 1.75;
+        color: rgba(255,255,255,0.4); max-width: 420px; margin-bottom: 2.2rem;
+    }
+
+    .hero-cta { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+
+    .cta-primary {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: #00e676; color: #000; text-decoration: none;
+        padding: 0.8rem 2rem; border-radius: 8px;
+        font-weight: 600; font-size: 0.88rem; letter-spacing: 1px; transition: all 0.25s;
+    }
+    .cta-primary:hover { background: #00c853; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,230,118,0.2); color: #000; }
+
+    .cta-secondary {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);
+        text-decoration: none; padding: 0.8rem 2rem; border-radius: 8px;
+        font-weight: 500; font-size: 0.88rem; letter-spacing: 1px;
+        transition: all 0.25s; background: rgba(255,255,255,0.02);
+    }
+    .cta-secondary:hover { border-color: rgba(255,255,255,0.25); color: #fff; }
+
+    /* Stats at bottom */
+    .hero-stats {
+        display: flex; gap: 2.5rem; flex-wrap: wrap;
+        padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .stat-number { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: #00e676; letter-spacing: 1px; display: block; }
+    .stat-label { font-size: 0.68rem; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 1.5px; }
+
+    /* Feature pills on image side */
+    .hero-features {
+        display: flex; flex-direction: column; gap: 0.4rem;
+        position: relative;
+    }
+    .feat-pill {
+        background: rgba(10,10,10,0.7); backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 20px; padding: 0.4rem 0.9rem;
+        font-size: 0.72rem; color: rgba(255,255,255,0.6);
+        display: inline-flex; align-items: center; gap: 0.3rem;
+        width: fit-content;
+    }
+    .feat-pill i { color: #00e676; font-size: 0.7rem; }
+
+    /* Geometric elements on left */
+    .geo-corner { position: absolute; width: 40px; height: 40px; z-index: 5; pointer-events: none; }
+    .geo-tl { top: 25%; left: 3rem; border-top: 1px solid rgba(0,230,118,0.15); border-left: 1px solid rgba(0,230,118,0.15); }
+    .geo-br { bottom: 20%; right: 2rem; border-bottom: 1px solid rgba(0,230,118,0.1); border-right: 1px solid rgba(0,230,118,0.1); }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .hero { grid-template-columns: 1fr; }
+        .hero-right { position: absolute; inset: 0; }
+        .hero-right img { filter: brightness(0.25) contrast(1.1) saturate(0.7); }
+        .hero-diagonal, .hero-slash { display: none; }
+        .hero-left { padding: 6rem 2.5rem 3rem; }
+    }
+    @media (max-width: 576px) {
+        .hero-left { padding: 5rem 1.5rem 2rem; }
+        .hero-stats { gap: 1.5rem; }
+        .landing-nav { padding: 0.8rem 1.5rem; }
+    }
+</style>
+{% endblock %}
+
+{% block auth_content %}
+<nav class="landing-nav">
+    <a href="{% url 'fittrack:index' %}" class="landing-logo">FITTRACK</a>
+    <div class="landing-nav-links">
+        <a href="{% url 'fittrack:login' %}" class="nav-btn nav-btn-ghost">Login</a>
+        <a href="{% url 'fittrack:register' %}" class="nav-btn nav-btn-accent">Get Started</a>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="landing-alert">{% for message in messages %}
+    <div class="alert alert-dismissible fade show" role="alert">{{ message }}
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close" style="font-size:0.55rem;"></button>
+    </div>{% endfor %}
+</div>
+{% endif %}
+
+<section class="hero">
+    <!-- Left: Text content -->
+    <div class="hero-left">
+        <div class="geo-corner geo-tl"></div>
+        <div class="geo-corner geo-br"></div>
+
+        <div class="hero-tag fade-up fade-up-d1"><span class="dot"></span> Free Workout Tracker</div>
+
+        <h1 class="hero-heading fade-up fade-up-d2">
+            TRACK YOUR<br>
+            <span class="accent">PROGRESS.</span><br>
+            <span class="outline">BUILD YOUR</span><br>
+            ROUTINE.
+        </h1>
+
+        <p class="hero-sub fade-up fade-up-d3">
+            Create custom exercises, build your own workouts,
+            log every session and watch your progress over time.
+        </p>
+
+        <div class="hero-cta fade-up fade-up-d4">
+            <a href="{% url 'fittrack:register' %}" class="cta-primary">START TRACKING <i class="bi bi-arrow-right"></i></a>
+            <a href="{% url 'fittrack:login' %}" class="cta-secondary">LOGIN <i class="bi bi-person"></i></a>
         </div>
-        <div>
-            <a href="/fittrack/about/">About</a><br />
-            <IMG src="{% static 'images/rango.JPG' %}" alt="Picture of Rango" /> 
-        </div>
-    </body>
 
-</html>
+        <div class="hero-stats fade-up fade-up-d5">
+            <span class="feat-pill"><i class="bi bi-lightning-charge-fill"></i> Custom Exercises</span>
+            <span class="feat-pill"><i class="bi bi-graph-up-arrow"></i> Progress Tracking</span>
+            <span class="feat-pill"><i class="bi bi-people-fill"></i> Friends</span>
+            <span class="feat-pill"><i class="bi bi-clipboard2-check"></i> Weekly Plans</span>
+        </div>
+    </div>
+
+    <!-- Right: Large image with diagonal blend -->
+    <div class="hero-right">
+        <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=1200&q=80"
+             alt="" aria-hidden="true" loading="eager">
+        <div class="hero-diagonal"></div>
+        <div class="hero-slash"></div>
+        <div class="hero-right-top"></div>
+        <div class="hero-glow"></div>
+    </div>
+</section>
+{% endblock %}
