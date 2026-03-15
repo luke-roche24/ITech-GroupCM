@@ -1,44 +1,24 @@
 from django.db import models
+from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
 
 # Create your models here.
-class Category(models.Model):
-    name = models.CharField(max_length=128, unique=True)
 
-    class Meta:
-        verbose_name_plural = 'Categories'
-
-    def __str__(self):
-        return self.name
-
-class Page(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    title = models.CharField(max_length=128)
-    url = models.URLField()
-    views = models.ImageField(default=0)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    website = models.URLField(blank=True)
+    picture = models.ImageField(upload_to='profile_images', blank=True)
 
     def __str__(self):
-        return self.title
+        return self.user.username
 
-"""Each of the classes below this represent a table in the database that is
-required for the program to work.
-In each class, each variable represents an entity in the table.
-e.g. A User has an id, a username and a password.
-Tango with django chapter 5: 5.1 - 5.6
-"""
-
-
-class User(models.Model):
-    id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=20, unique=True)
-    password = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.username
 
 class Exercise(models.Model):
+    NAME_MAX_LENGTH = 128
+
     id = models.AutoField(primary_key=True)
     ownerid = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=35)
+    name = models.CharField(max_length=NAME_MAX_LENGTH)
     body_part = models.CharField(max_length=25)
 
     def __str__(self):
@@ -80,4 +60,3 @@ class WorkoutExercise(models.Model):
     order = models.SmallIntegerField()
     sets = models.SmallIntegerField()
     reps = models.SmallIntegerField()
-        

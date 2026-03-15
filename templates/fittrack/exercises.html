@@ -1,94 +1,85 @@
-<!-- File: exercises.html 
-This html represents the exercises page 
--->
-{% load static %}
+{% extends 'fittrack/base.html' %}
+{% load staticfiles %}
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FitTrack — Your Exercises</title>
-  <link rel="stylesheet" href="{% static 'CSS/styles.css' %}" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">FITTRACK</div>
-      <nav>
-        <div><strong>Main</strong></div>
-        <a href="/fittrack/dashboard/" class="nav-link">Dashboard</a>
-        <a href="/fittrack/exercises/" class="nav-link">Your Exercises</a>
-        <a href="/fittrack/workouts/" class="nav-link">Your Workouts</a>
-        <a href="/fittrack/current/" class="nav-link">Current Plan</a>
-        <div style="margin-top:12px"><strong>Progress</strong></div>
-        <a href="/fittrack/progress/" class="nav-link">Trends</a>
-        <a href="#">Personal Bests</a>
-        <div style="margin-top:12px"><strong>Friends</strong></div>
-        <a href="/fittrack/friends/" class="nav-link">Friends List</a>
-        <div style="margin-top:12px"><strong>Account</strong></div>
-        <a href="#">Profile</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
-      </nav>
-    </aside>
+{% block title_block %}
+    Your Exercises
+{% endblock %}
 
-    <div class="main-area">
-      <header class="topbar">
-        <h1>Your Exercises</h1>
-        <div class="username">&nbsp;</div>
-      </header>
-
-      <main class="content">
-        <div class="exercises-grid">
-          <div class="ex-list">
-            <div class="search">Search bar</div>
-            <div class="group">Legs</div>
-            {% if exercises %}
-              <ul class="items">
-              {% for exercise in exercises %}  
-                <li>{{ exercise.name }}</li>
-              {% endfor %}
-              </ul>
-            {% else %}
-              <strong>There are no exercises stored.</strong>
-            {% endif %}
-
-            <div class="group">Arms</div>
-            <ul class="items">
-              <li>Cable Curls</li>
-              <li>Tricep Pulldowns</li>
-            </ul>
-            <div class="group">Chest</div>
-            <ul class="items">
-              <li class="selected">Barbell Bench Press</li>
-              <li>Cable Flyes</li>
-              <li>Press-Ups</li>
-            </ul>
-          </div>
-
-          <div class="forms">
-            <div class="card form-card">
-              <h2>Add Exercise</h2>
-              <label>Name:</label><input type="text" placeholder="Text Box" />
-              <label>B.Part:</label><input type="text" placeholder="Text Box" />
-              <label>Increment:</label>
-              <div class="increment"><input type="number" value="5" /> <div class="spin">▲<br/>▼</div></div>
-              <button class="btn save">Save</button>
-            </div>
-
-            <div class="card form-card">
-              <h2>Edit - Barbell Bench Press</h2>
-              <label>Name:</label><input type="text" placeholder="Text Box" />
-              <label>B.Part:</label><input type="text" placeholder="Text Box" />
-              <label>Increment:</label>
-              <div class="increment"><input type="number" value="5" /> <div class="spin">▲<br/>▼</div></div>
-              <button class="btn update">Update</button>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+{% block body_block %}
+<nav class="navbar navbar-dark bg-dark py-1" role="banner">
+  <div class="container">
+    <span class="navbar-brand mb-0 h6">Your Exercises</span>
   </div>
-</body>
-</html>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="card mb-6">
+                <div class="card-body">
+                    <h2>Exercises</h2>
+                    <p class="card-text">
+                    {% if exercises %}
+                    <li class="list-group-item">
+                            <input type="search" id="exercise-search-input" class="form-control ds-input" placeholder="Search..." />
+                    </li>
+                    <ul id="exercises-listing" class="list-group">
+                        
+                        {% include 'fittrack/exercise_list_items.html' with exercises=exercises %}
+                        <!--{% for exercise in exercises %}
+                        <li class="list-group-item"  data-id="{{ exercise.id }}" data-name="{{ exercise.name }}" data-bodypart="{{ exercise.body_part }}">
+                            <a href="{% url 'fittrack:exercises' %}">{{ exercise.name }}</a>
+                        </li>
+                    {% endfor %}-->
+                    </ul>
+                    {% else %}
+                        <strong>There are no exercises present.</strong>
+                    {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2>Add Exercise</h2>
+                    <p class="card-text">
+                    <form role="form" id="exercise_form" method="post" action="{% url 'fittrack:exercises' %}">
+                            {% csrf_token %}
+                            {{ add_exercise.as_p }}
+                        <button class="btn btn-primary" type="submit" name="submit">Add Exercise</button>
+                    </form>
+                    </p>
+                    
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2> Edit Exercise</h2>
+                    <p class="card-text">
+                    <form role="form" id="edit-exercise-form" method="post" action="{% url 'fittrack:exercises' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="edit-id" name="exercise_id" value="" />
+                    {{ edit_exercise.as_p }}
+
+                    <div class="mt-2">
+                        <button class="btn btn-primary" type="submit" name="update">Update Exercise</button>
+
+                        <!-- Delete button submits the form with name="delete" included in POST -->
+                        <button id="delete-exercise-btn" class="btn btn-danger" type="submit" name="delete" value="1">
+                            Delete Exercise
+                        </button>
+
+                        <button type="button" id="clear-edit-btn" class="btn btn-secondary">Clear</button>
+                    </div>
+                    </form>
+                    </p>
+                </div>
+                </div>
+        </div>
+    </div>    
+</div>
+{% endblock %}
+
+

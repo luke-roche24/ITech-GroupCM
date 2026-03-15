@@ -1,53 +1,70 @@
 # populate_rango.py
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'webapp_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fittrack_project.settings')
 
 import django
 django.setup()
 
 import fittrack.models as m
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
 
 def populate():
     exercises = [
-        {'id': '1', 'ownerid': '1', 'name': 'Bench Press', 'body_part': 'Chest'}
+        {'id': 2, 'name': 'Bench Dumbbell Press', 'body_part': 'Chest'},
     ]
 
     users = [
-        {'id': '1', 'username': 'lukeroche', 'password': '1234'}
+        {'username': 'lukeroche', 'password': '1234'},
     ]
 
-    user = users[0]
-    u = add_user(user['id'], user['username'], user['password'])
+    # create/get a user (we return the user instance)
+    user_data = users[0]
+    u = add_user(user_data['username'], user_data['password'])
 
+    # add exercises owned by the user
     for e in exercises:
         add_exercise(e['id'], u, e['name'], e['body_part'])
+
+    print("Done populating.")
 
     
 
 
-    # print out what we added
-    #for e in m.Exercise.objects.all():
-    #    add_exercise(e['id'], u, e['name'], e['body_part'])
+    
 
 
-def add_exercise(id, oid, name, body_part):
-    e, created = m.Exercise.objects.get_or_create(id=id, ownerid=oid, name=name, body_part=body_part)
-    e.id = id
-    e.ownerid = oid
+def add_exercise(eid, owner, name, body_part):
+    """
+    Create or get an Exercise. `owner` should be a User instance.
+    Adjust the field name `ownerid` below to match your Exercise model's FK name
+    (e.g. owner, ownerid, user, created_by, etc.).
+    """
+    # If owner field on Exercise is a FK called `ownerid`, use ownerid=owner.
+    # If it's called `owner` or `user`, change the keyword below accordingly.
+    e, created = m.Exercise.objects.get_or_create(
+        id=eid,
+        defaults={'ownerid': owner, 'name': name, 'body_part': body_part}
+    )
+    # Update fields in case the object existed but fields changed
+    e.ownerid = owner
     e.name = name
     e.body_part = body_part
     e.save()
     return e
 
-def add_user(id, name, pw):
-    u, created = m.User.objects.get_or_create(id=id, username=name, password=pw)
-    u.id = id
-    u.username = name
-    u.password = pw
-    u.save()
-    return u
+def add_user(username, password):
+    """
+    Create or get a Django auth user and set a hashed password.
+    We don't forcibly set the user's ID here (let Django create it).
+    """
+    User = get_user_model()
+    user, created = User.objects.get_or_create(username=username)
+    # Always set the password using set_password (hashes it)
+    user.set_password(password)
+    user.save()
+    return user
 
 
 
