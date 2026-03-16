@@ -109,12 +109,10 @@ class WorkoutView(View):
     
     def post(self, request):
 
-        # ... inside post() method:
-
-        # 1) Handle delete request (AJAX or non-AJAX)
+        
         if 'delete' in request.POST and request.POST.get('workout_id'):
             workout_id = request.POST.get('workout_id')
-            # get the workout or 404
+            
             workout = get_object_or_404(m.Workout, pk=workout_id)
 
             # ensure owner matches current user
@@ -124,13 +122,12 @@ class WorkoutView(View):
             #        return JsonResponse({'success': False, 'error': 'Permission denied'}, status=403)
             #    return HttpResponseForbidden('Permission denied')
 
-            # delete the workout (WorkoutExercise rows will be deleted by cascade)
+            
             workout.delete()
 
-            # respond: if AJAX, return JSON so client can remove the element from DOM
+            
             if request.is_ajax() or request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'workout_id': int(workout_id)})
-            # non-AJAX fallback: redirect back to workouts page so the list is fresh
             return redirect('fittrack:workouts')
 
         exercise_ids = request.POST.getlist('exercise_id[]')
@@ -145,11 +142,11 @@ class WorkoutView(View):
             reps_list = request.POST.getlist('reps[]')
             order_list = request.POST.getlist('order[]')
 
-            # basic consistency checks
-            if not (len(exercise_ids) == len(sets_list) == len(reps_list) == len(order_list)):
-                return JsonResponse({'success': False, 'error': 'Mismatched exercise arrays'}, status=400)
+            
+            #if not (len(exercise_ids) == len(sets_list) == len(reps_list) == len(order_list)):
+            #    return JsonResponse({'success': False, 'error': 'Mismatched exercise arrays'}, status=400)
 
-            # convert and validate numeric fields
+            
             parsed = []
             try:
                 for i, exid in enumerate(exercise_ids):
@@ -163,7 +160,7 @@ class WorkoutView(View):
             except (ValueError, TypeError):
                 return JsonResponse({'success': False, 'error': 'Invalid numeric values'}, status=400)
 
-            # Save Workout + WorkoutExercise rows atomically
+           
             with transaction.atomic():
                 workout = form.save(commit=False)
                 #---------Temporary-------------------
@@ -174,7 +171,7 @@ class WorkoutView(View):
                 created_ids = []
                 for ex in parsed:
                     exercise_obj = get_object_or_404(m.Exercise, id=ex['exercise_id'])
-                    # security check: exercise belongs to user
+                   
                     #if exercise_obj.ownerid != request.user:
                     #    transaction.set_rollback(True)
                     #    return JsonResponse({'success': False, 'error': f'Permission denied for exercise id {ex["exercise_id"]}'}, status=403)
@@ -188,14 +185,14 @@ class WorkoutView(View):
                     )
                     created_ids.append(we.id)
 
-            # render partial HTML to return to the client (so it can be inserted)
+           
             workout_html = render_to_string('fittrack/workout_list_items.html', {'workout': workout}, request=request)
 
-            #If AJAX, return JSON with HTML snippet
+            
             if request.is_ajax() or request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'workout_id': workout.id, 'created_items': created_ids, 'workout_html': workout_html})
 
-            # Non-AJAX fallback: redirect to workouts page (so full page reload shows updates)
+           
             return redirect('fittrack:workouts')
     
 
@@ -212,10 +209,10 @@ class ExerciseSuggestionView(View):
         if suggestion:
             exercise_list = m.Exercise.objects.filter(name__istartswith=suggestion).order_by('name')
         else:
-            # optionally return nothing or full list when no suggestion
+            
             exercise_list = m.Exercise.objects.order_by('name')
 
-        # Render only the li fragments
+        
         return render(request, 'fittrack/exercise_list_items.html', {'exercises': exercise_list})
 
 
@@ -238,10 +235,10 @@ class WorkoutSuggestionView(View):
         if suggestion:
             workout_list = m.Workout.objects.filter(name__istartswith=suggestion).order_by('name')
         else:
-            # optionally return nothing or full list when no suggestion
+            
             workout_list = m.Workout.objects.order_by('name')
 
-        # Render only the li fragments
+        
         return render(request, 'fittrack/workout_list_items.html', {'workouts': workout_list})
 
 

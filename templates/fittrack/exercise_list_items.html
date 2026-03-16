@@ -1,5 +1,4 @@
-{# templates/fittrack/_exercise_list_items.html #}
-{# Renders only the <li> rows (NOT the <ul> or page chrome) #}
+
 {% for exercise in exercises %}
 <li class="list-group-item" data-id="{{ exercise.id }}" data-name="{{ exercise.name }}" data-bodypart="{{ exercise.body_part }}">
   <a href="{% url 'fittrack:exercises' %}">{{ exercise.name }}</a>

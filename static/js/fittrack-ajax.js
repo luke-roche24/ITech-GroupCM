@@ -1,382 +1,331 @@
-console.log("JS loaded");
-$(document).ready(function() {
 
-    $('#exercises-listing').on('click', 'li.list-group-item', function(e) {
-        // ignore the search input row (if you left it inside the ul)
-        if ($(this).find('#search-input').length) {
-            return;
-        }
+(function ($) {
+  'use strict';
 
-        e.preventDefault();
+  // ---- Helpers ------------------------------------------------------------
+  const $doc = $(document);
 
-        var id = $(this).data('id');
-        var name = $(this).data('name') || '';
-        var bodypart = $(this).data('bodypart') || '';
+  // Read cookie
+  const getCookie = (name) => {
+    const cookies = document.cookie ? document.cookie.split(';') : [];
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        return decodeURIComponent(cookie.substring(name.length + 1));
+      }
+    }
+    return null;
+  };
 
-        // populate hidden id and form fields
-        $('#edit-id').val(id);
-        $('#edit-name').val(name);
-        $('#edit-body-part').val(bodypart);
+  // Configure jQuery to send CSRF header on same-origin requests
+  $.ajaxSetup({
+    beforeSend(xhr, settings) {
+      const safeMethod = /^(GET|HEAD|OPTIONS|TRACE)$/i;
+      if (!safeMethod.test(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+      }
+    }
+  });
 
-        // visual cue for selected item
-        $('#exercises-listing .list-group-item').removeClass('active');
-        $(this).addClass('active');
+  // Debounce utility
+  const debounce = (fn, wait = 200) => {
+    let timer = null;
+    return function (...args) {
+      const ctx = this;
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(ctx, args), wait);
+    };
+  };
 
-        // focus name field for quick editing
-        $('#edit-name').focus();
+  
+  function buildPickedExerciseRow({ id, name, sets = 3, reps = 10 }) {
+    const $li = $('<li/>', {
+      class: 'list-group-item d-flex align-items-center',
+      'data-id': id
     });
 
-    $('#w-exercises-listing').on('click', 'li.list-group-item', function(e) {
-        // ignore the search input row
-        if ($(this).find('#search-input').length) return;
-
-        e.preventDefault();
-
-        var id = $(this).data('id');
-        var name = $(this).data('name') || '';
-        if (!name) return;
-
-        // ensure target list exists
-        var $picked = $('#picked-exercises');
-        if (!$picked.length) {
-            $picked = $('<ul id="picked-exercises" class="list-group mt-3"></ul>').insertAfter('#exercises-listing');
-        }
-
-         // blink the clicked source item (add 'active' then remove after 1s)
-        var $src = $(this);
-        $src.addClass('active');
-        setTimeout(function() { $src.removeClass('active'); }, 100);
-
-        // create the new list item (with a remove button)
-        var safeName = $('<div>').text(name).html();
-        var $li = $(
-        '<li class="list-group-item d-flex align-items-center" data-id="' + id + '">' +
-            '<span class="picked-name flex-grow-1">' + safeName + '</span>' +
-            '<input type="number" min="1" class="form-control form-control-sm picked-sets mx-2" placeholder="Sets" value="3" style="width:80px">' +
-            '<input type="number" min="1" class="form-control form-control-sm picked-reps mx-2" placeholder="Reps" value="10" style="width:80px">' +
-            '<button class="btn btn-sm btn-outline-danger remove-picked" type="button" aria-label="Remove ' + safeName + '">Remove</button>' +
-        '</li>'
-        );
-
-        $picked.append($li);
-        $li[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-        
+    const $name = $('<span/>', { class: 'picked-name flex-grow-1' }).text(name);
+    const $sets = $('<input/>', {
+      type: 'number',
+      min: 1,
+      class: 'form-control form-control-sm picked-sets mx-2',
+      placeholder: 'Sets',
+      value: sets,
+      style: 'width:80px'
     });
-
-    // remove picked item
-    $('#picked-exercises').on('click', '.remove-picked', function(e){
-        e.stopPropagation();           // don't trigger parent's click
-        $(this).closest('li').remove();
+    const $reps = $('<input/>', {
+      type: 'number',
+      min: 1,
+      class: 'form-control form-control-sm picked-reps mx-2',
+      placeholder: 'Reps',
+      value: reps,
+      style: 'width:80px'
     });
+    const $remove = $('<button/>', {
+      type: 'button',
+      class: 'btn btn-sm btn-outline-danger remove-picked',
+      'aria-label': 'Remove ' + name
+    }).text('Remove');
 
-    $('#delete-exercise-btn').on('click', function(e) {
-        var ok = confirm('Are you sure you want to delete this exercise? This cannot be undone.');
-        if (!ok) {
-        // stop the submit
-        e.preventDefault();
+    $li.append($name, $sets, $reps, $remove);
+    return $li;
+  }
+
+  
+  function showMessage($target, text) {
+    $target.text(text);
+  }
+
+  // ---- Cached selectors --------------------------------------------------
+  const $exercisesListing = $('#exercises-listing');
+  const $wExercisesListing = $('#w-exercises-listing');
+  const $pickedContainerSelector = '#picked-exercises';
+  const $workoutsListing = $('#workouts-listing');
+  const $createWorkoutForm = $('#create-workout-form');
+  const $createWorkoutBtn = $('#create-workout-btn');
+  const $createWorkoutMsg = $('#create-workout-msg');
+
+  // ---- Selection / Edit handlers -----------------------------------------
+  $exercisesListing.on('click', 'li.list-group-item', function (e) {
+    // ignore the search input row
+    if ($(this).find('#search-input').length) return;
+
+    e.preventDefault();
+
+    const id = $(this).data('id');
+    const name = $(this).data('name') || '';
+    const bodypart = $(this).data('bodypart') || '';
+
+    // populate hidden id and form fields
+    $('#edit-id').val(id);
+    $('#edit-name').val(name);
+    $('#edit-body-part').val(bodypart);
+
+    // visual cue
+    $exercisesListing.find('.list-group-item').removeClass('active');
+    $(this).addClass('active');
+    $('#edit-name').focus();
+  });
+
+  // ---- Pick exercise into workout handlers -------------------------------
+  $wExercisesListing.on('click', 'li.list-group-item', function (e) {
+    if ($(this).find('#search-input').length) return;
+
+    e.preventDefault();
+
+    const id = $(this).data('id');
+    const name = $(this).data('name') || '';
+    if (!name) return;
+
+    // Ensure picked list exists
+    let $picked = $( $pickedContainerSelector );
+    if (!$picked.length) {
+      $picked = $('<ul/>', { id: 'picked-exercises', class: 'list-group mt-3' })
+        .insertAfter('#exercises-listing');
+    }
+
+    // Blink picked item
+    const $src = $(this);
+    $src.addClass('active');
+    setTimeout(() => $src.removeClass('active'), 100);
+
+    const $li = buildPickedExerciseRow({ id, name });
+    $picked.append($li);
+    
+    $li[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  // Remove the picked item
+  $doc.on('click', '#picked-exercises .remove-picked', function (e) {
+    e.stopPropagation(); // avoid triggering parent clicks
+    $(this).closest('li').remove();
+  });
+
+  // ---- Delete exercise confirmation -------------------------------------
+  $('#delete-exercise-btn').on('click', function (e) {
+    const ok = confirm('Are you sure you want to delete this exercise? This cannot be undone.');
+    if (!ok) {
+      e.preventDefault();
+      return false;
+    }
+
+    return true;
+  });
+
+  // ---- Clear edit form --------------------------------------------------
+  $('#clear-edit-btn').on('click', function () {
+    $('#edit-id').val('');
+    $('#edit-name').val('');
+    $('#edit-body-part').val('');
+    $('.list-group-item').removeClass('active');
+  });
+
+
+  // ---- Suggest (search) handlers (debounced) -----------------------------
+  // Suggest sender function
+  function sendSuggest(query, url, targetSelector) {
+    $.get(url, { suggestion: query })
+      .done(function (data) {
+        const $target = $(targetSelector);
+        $target.empty().append(data);
+      })
+      .fail(function () {
+        console.error('Suggest request failed for', url);
+      });
+  }
+
+  
+  $('#exercise-search-input').on('keyup', debounce(function () {
+    const query = $(this).val();
+  
+    sendSuggest(query, '/fittrack/exercise_suggest/', '#exercises-listing');
+    sendSuggest(query, '/fittrack/workout_suggest/', '#w-exercises-listing');
+  }, 200));
+
+  $('#workout-search-input').on('keyup', debounce(function () {
+    const query = $(this).val();
+    sendSuggest(query, '/fittrack/workout_suggest/', '#workouts-listing');
+  }, 200));
+
+  // ---- Create workout ---------------------------
+  $createWorkoutBtn.on('click', function () {
+    const $btn = $(this);
+    $createWorkoutMsg.empty();
+    const workoutName = $('#workout-name').val().trim();
+
+    if (!workoutName) {
+      showMessage($createWorkoutMsg, 'Please enter a workout name.');
+      return;
+    }
+
+    const $picked = $('#picked-exercises li[data-id]');
+    if (!$picked.length) {
+      showMessage($createWorkoutMsg, 'Add at least one exercise to the picked list.');
+      return;
+    }
+
+    const exercise_ids = [];
+    const sets = [];
+    const reps = [];
+    const orders = [];
+
+    let validationError = false;
+
+    $picked.each(function (index) {
+      const $li = $(this);
+      const exId = $li.data('id');
+      const setVal = parseInt($li.find('.picked-sets').val(), 10) || 0;
+      const repVal = parseInt($li.find('.picked-reps').val(), 10) || 0;
+
+      if (!exId || setVal <= 0 || repVal <= 0) {
+        $li.addClass('border border-danger');
+        showMessage($createWorkoutMsg, 'Each picked exercise must have valid sets and reps (> 0).');
+        validationError = true;
         return false;
+      }
+
+      exercise_ids.push(exId);
+      sets.push(setVal);
+      reps.push(repVal);
+      orders.push(index + 1);
+    });
+
+    if (validationError) return;
+
+    // Disable UI while request runs
+    const originalLabel = $btn.text();
+    $btn.prop('disabled', true).text('Creating…');
+
+    // Build data
+    const data = { name: workoutName };
+    data['exercise_id[]'] = exercise_ids;
+    data['sets[]'] = sets;
+    data['reps[]'] = reps;
+    data['order[]'] = orders;
+
+    $.ajax({
+      url: $createWorkoutForm.attr('action'),
+      method: 'POST',
+      data: data,
+      traditional: true, // order arrays for exercise order as exercise_id[]=1&exercise_id[]=2
+      success(resp) {
+        if (resp && resp.success) {
+          showMessage($createWorkoutMsg, 'Workout created (id: ' + resp.workout_id + ').');
+          
+          window.location.reload();
+        } else {
+          showMessage($createWorkoutMsg, resp && resp.error ? resp.error : 'Failed to create workout.');
         }
-        // otherwise allow submit to go through
+      },
+      error(xhr) {
+        let text = 'Server error while creating workout.';
+        try {
+          const json = JSON.parse(xhr.responseText);
+          text = json.error || text;
+        } catch (e) { /* ignore parse errors */ }
+        showMessage($createWorkoutMsg, text);
+      },
+      complete() {
+        $btn.prop('disabled', false).text(originalLabel);
+      }
     });
+  });
 
-    // clear button to reset the form
-    $('#clear-edit-btn').on('click', function() {
-        $('#edit-id').val('');
-        $('#edit-name').val('');
-        $('#edit-body-part').val('');
-        $('.list-group-item').removeClass('active');
-    });
+  // ---- Delete workout ---------------------------------------
+  $workoutsListing.on('click', '.delete-workout', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
 
+    const $btn = $(this);
+    const workoutId = $btn.data('id');
+    const workoutName = $btn.closest('li').data('name') || '';
 
-    $('#like-btn').click(function() {
-        var categoryIdVar;
-        categoryIdVar = $(this).attr('data-categoryid');
+    if (!workoutId) return;
 
-        $.get('/rango/like_category/',
-            {'category_id': categoryIdVar},
-            function(data) {
-                $('#like-count').html(data);
-                $('#like-btn').hide();
-            })
-    });
-
-    (function($){
-    var typingTimer;
-    var doneTypingInterval = 200;
-
-    $('#exercise-search-input').on('keyup', function() {
-        clearTimeout(typingTimer);
-        var $this = $(this);
-        typingTimer = setTimeout(function(){
-        var query = $this.val();
-        $.get('/fittrack/exercise_suggest/', { 'suggestion': query })
-            .done(function(data) {
-            var $ul = $('#exercises-listing');
-            $ul.empty();
-            $ul.append(data);
-            })
-            .fail(function() {
-            console.error('Suggest request failed');
-            });
-        }, doneTypingInterval);
-    });
-
-    $('#workout-search-input').on('keyup', function() {
-        clearTimeout(typingTimer);
-        var $this = $(this);
-        typingTimer = setTimeout(function(){
-        var query = $this.val();
-        $.get('/fittrack/workout_suggest/', { 'suggestion': query })
-            .done(function(data) {
-            var $ul = $('#workouts-listing');
-            $ul.empty();
-            $ul.append(data);
-            })
-            .fail(function() {
-            console.error('Suggest request failed');
-            });
-        }, doneTypingInterval);
-    });
-
-  // If user pauses typing -> trigger immediately; if they keep typing, waits.
-    })(jQuery);
-    
-    (function($){
-    var typingTimer;
-    var doneTypingInterval = 200;
-
-    $('#exercise-search-input').on('keyup', function() {
-        clearTimeout(typingTimer);
-        var $this = $(this);
-        typingTimer = setTimeout(function(){
-        var query = $this.val();
-        $.get('/fittrack/suggest/', { 'suggestion': query })
-            .done(function(data) {
-            var $ul = $('#w-exercises-listing');
-            $ul.empty();
-            $ul.append(data);
-            })
-            .fail(function() {
-            console.error('Suggest request failed');
-            });
-        }, doneTypingInterval);
-    });
-
-  // If user pauses typing -> trigger immediately; if they keep typing, waits.
-    })(jQuery);
-
-    // jQuery AJAX that posts form + arrays of exercises to server
-    (function($) {
-    // read CSRF token from cookie (Django default)
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-            }
-        }
-        }
-        return cookieValue;
+    if (!confirm('Delete workout "' + workoutName + '"? This will remove its exercises too.')) {
+      return;
     }
 
-    $('#create-workout-btn').on('click', function () {
-        var $btn = $(this);
-        var $msg = $('#create-workout-msg').empty();
-        var workoutName = $('#workout-name').val().trim();
+    $btn.prop('disabled', true).text('Deleting…');
 
-        if (!workoutName) {
-        $msg.text('Please enter a workout name.');
-        return;
-        }
+    
+    const url = $createWorkoutForm.attr('action') || window.location.href;
 
-        // gather picked exercises
-        var $picked = $('#picked-exercises li[data-id]');
-        if (!$picked.length) {
-        $msg.text('Add at least one exercise to the picked list.');
-        return;
-        }
+    $.ajax({
+      url,
+      method: 'POST',
+      data: { workout_id: workoutId, delete: '1' },
+      success(resp) {
+        if (resp && resp.success) {
+          const $li = $workoutsListing.find('li[data-id="' + resp.workout_id + '"]').first();
+          if ($li.length) {
+            $li.fadeOut(200, function () { $(this).remove(); });
 
-        var exercise_ids = [];
-        var sets = [];
-        var reps = [];
-        var orders = [];
-
-        $picked.each(function(index) {
-        var $li = $(this);
-        var exId = $li.data('id');
-        var setVal = parseInt($li.find('.picked-sets').val(), 10) || 0;
-        var repVal = parseInt($li.find('.picked-reps').val(), 10) || 0;
-        // basic client validation
-        if (!exId || setVal <= 0 || repVal <= 0) {
-            // highlight problem row and stop
-            $li.addClass('border border-danger');
-            $msg.text('Each picked exercise must have valid sets and reps (> 0).');
-            return false; // break out of each()
-        }
-
-        exercise_ids.push(exId);
-        sets.push(setVal);
-        reps.push(repVal);
-        orders.push(index + 1);
-        });
-
-        if ($msg.text()) {
-        // validation error found (message already set)
-        return;
-        }
-
-        // disable UI while request runs
-        var originalLabel = $btn.text();
-        $btn.prop('disabled', true).text('Creating…');
-
-        // Build data: workout name + arrays. jQuery will encode arrays like exercise_id[]=1&exercise_id[]=2
-        var data = {
-        name: workoutName
-        };
-
-        // append arrays using the bracket-syntax keys
-        for (var i = 0; i < exercise_ids.length; i++) {
-        data['exercise_id[]'] = data['exercise_id[]'] || [];
-        data['exercise_id[]'].push(exercise_ids[i]);
-
-        data['sets[]'] = data['sets[]'] || [];
-        data['sets[]'].push(sets[i]);
-
-        data['reps[]'] = data['reps[]'] || [];
-        data['reps[]'].push(reps[i]);
-
-        data['order[]'] = data['order[]'] || [];
-        data['order[]'].push(orders[i]);
-        }
-
-        $.ajax({
-        url: $('#create-workout-form').attr('action'),
-        method: 'POST',
-        data: data,
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        traditional: true, // ensure jQuery serializes arrays as exercise_id[]=1&exercise_id[]=2
-        success: function(resp) {
-            if (resp.success) {
-            $msg.text('Workout created (id: ' + resp.workout_id + ').');
+            if ($workoutsListing.find('li[data-id]').length === 0) {
+              $workoutsListing.append('<li class="list-group-item"><em>No workouts found.</em></li>');
+            }
+          } else {
             window.location.reload();
-            
-            // clear UI or redirect
-            $('#workout-name').val('');
-            $('#picked-exercises').find('li[data-id]').remove();
-            } else {
-            $msg.text(resp.error || 'Failed to create workout.');
-            }
-        },
-        error: function(xhr) {
-            var text = 'Server error while creating workout.';
-            try {
-            var json = JSON.parse(xhr.responseText);
-            text = json.error || text;
-            } catch (e) {}
-            $msg.text(text);
-        },
-        complete: function() {
-            $btn.prop('disabled', false).text(originalLabel);
+          }
+        } else {
+          alert(resp && resp.error ? resp.error : 'Failed to delete workout.');
+          $btn.prop('disabled', false).text('Delete');
         }
-        });
-
+      },
+      error(xhr) {
+        let text = 'Server error while deleting workout.';
+        try {
+          const json = JSON.parse(xhr.responseText);
+          text = json.error || text;
+        } catch (e) { /* ignore */ }
+        alert(text);
+        $btn.prop('disabled', false).text('Delete');
+      }
     });
-    })(jQuery);
+  });
 
-    
-
-    // requires jQuery
-    (function($){
-    // reuse your getCookie helper for CSRF
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-            }
-        }
-        }
-        return cookieValue;
-    }
-
-    // delegate handler for delete button inside workouts list
-    $('#workouts-listing').on('click', '.delete-workout', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        var $btn = $(this);
-        var workoutId = $btn.data('id');
-        var workoutName = $btn.closest('li').data('name') || '';
-
-        if (!workoutId) return;
-
-        // confirm with the user — you can replace with a nicer modal if you have one
-        if (!confirm('Delete workout "' + workoutName + '"? This will remove its exercises too.')) {
-        return;
-        }
-
-        // optionally disable button while request runs
-        $btn.prop('disabled', true).text('Deleting…');
-
-        // POST to the same URL that WorkoutView handles (ensure your form/action is the view URL)
-        var url = $('#create-workout-form').attr('action') || window.location.href;
-
-        $.ajax({
-        url: url,
-        method: 'POST',
-        data: {
-            workout_id: workoutId,
-            delete: '1'   // indicator for server to perform deletion
-        },
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        success: function (resp) {
-            if (resp.success) {
-            // remove the list item with a fade
-            var $li = $('#workouts-listing').find('li[data-id="' + resp.workout_id + '"]').first();
-            if ($li.length) {
-                $li.fadeOut(200, function(){ $(this).remove(); });
-
-                // optional: if list is now empty, show "No workouts found." row
-                if ($('#workouts-listing li[data-id]').length === 0) {
-                $('#workouts-listing').append('<li class="list-group-item"><em>No workouts found.</em></li>');
-                }
-            } else {
-                // fallback: reload if item not found
-                // window.location.reload();
-            }
-            } else {
-            alert(resp.error || 'Failed to delete workout.');
-            $btn.prop('disabled', false).text('Delete');
-            }
-        },
-        error: function (xhr) {
-            var text = 'Server error while deleting workout.';
-            try {
-            var json = JSON.parse(xhr.responseText);
-            text = json.error || text;
-            } catch (e) {}
-            alert(text);
-            $btn.prop('disabled', false).text('Delete');
-        }
-        });
-    });
-
-    })(jQuery);
-
-    
-
-    
-});
+  
+  $(function () {
+    console.log('Fittrack UI loaded');
+  });
+})(jQuery);
