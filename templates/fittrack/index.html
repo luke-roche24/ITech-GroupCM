@@ -4,193 +4,16 @@
 {% block title %}FitTrack — Track. Build. Progress.{% endblock %}
 
 {% block extra_css %}
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-    html, body { margin:0; padding:0; overflow-x:hidden; background:#121212; scroll-behavior:smooth; }
-
-    /* ── Loader ── */
-    .loader { position:fixed; inset:0; z-index:9999; background:#121212; display:flex; align-items:center; justify-content:center; transition:opacity 0.5s,visibility 0.5s; }
-    .loader.hide { opacity:0; visibility:hidden; }
-    .loader-logo { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:8px; color:#00e676; opacity:0; animation:loaderIn 1s ease forwards; }
-    .loader-bar { position:absolute; bottom:45%; left:50%; transform:translateX(-50%); width:120px; height:2px; background:#222; border-radius:2px; overflow:hidden; }
-    .loader-bar::after { content:''; position:absolute; left:0; top:0; height:100%; width:0; background:#00e676; animation:barFill 1.2s ease forwards; }
-    @keyframes loaderIn { 0%{opacity:0;transform:translateY(10px)} 40%{opacity:1;transform:translateY(0)} }
-    @keyframes barFill { 0%{width:0} 100%{width:100%} }
-
-    /* ── Nav ── */
-    .landing-nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:1rem 3rem; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(to bottom, rgba(18,18,18,0.95), transparent); }
-    .landing-logo { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:5px; color:#00e676; text-decoration:none; }
-    .landing-nav-links { display:flex; gap:0.5rem; align-items:center; }
-    .nav-btn { text-decoration:none; padding:0.45rem 1.2rem; border-radius:6px; font-size:0.82rem; font-weight:500; transition:all 0.2s; }
-    .nav-btn-ghost { color:rgba(255,255,255,0.5); }
-    .nav-btn-ghost:hover { color:#fff; }
-    .nav-btn-accent { background:#00e676; color:#000; font-weight:600; }
-    .nav-btn-accent:hover { background:#00c853; }
-
-    .landing-alert { position:fixed; top:58px; left:50%; transform:translateX(-50%); z-index:99; min-width:280px; text-align:center; }
-    .landing-alert .alert { background:rgba(20,20,20,0.92); backdrop-filter:blur(12px); border:1px solid rgba(0,230,118,0.2); color:#00e676; border-radius:10px; font-size:0.83rem; padding:0.5rem 1.3rem; position:relative; }
-
-    /* ── Hero ── */
-    .hero { position:relative; width:100vw; min-height:100vh; display:grid; grid-template-columns:40% 60%; overflow:hidden; background:#121212; }
-
-    /* Left side - text centered at ~1/3 golden ratio */
-    .hero-left {
-        position:relative; z-index:10;
-        padding: 5rem 4rem 3rem 6vw; 
-        width: 80vw; 
-    }
-    .hero-left::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(0,230,118,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,118,0.02) 1px,transparent 1px); background-size:50px 50px; pointer-events:none; }
-
-    .hero-right { position:relative; overflow:hidden; }
-    .hero-right img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center; filter:brightness(0.75) contrast(1.2) saturate(0.8); }
-    .hero-diagonal { position:absolute; top:0; left:-1px; bottom:0; width:180px; z-index:2; background:linear-gradient(to right, #121212 0%, transparent 100%); clip-path:polygon(0 0, 100% 8%, 60% 100%, 0 100%); }
-    .hero-slash { position:absolute; top:0; left:80px; bottom:0; width:3px; z-index:3; background:linear-gradient(180deg, transparent 10%, rgba(0,230,118,0.4) 40%, rgba(0,230,118,0.4) 60%, transparent 90%); transform:skewX(-8deg); }
-    .hero-right::after { content:''; position:absolute; bottom:0; left:0; right:0; height:200px; z-index:2; background:linear-gradient(to top, #121212, transparent); }
-    .hero-right-top { position:absolute; top:0; left:0; right:0; height:120px; z-index:2; background:linear-gradient(to bottom, rgba(18,18,18,0.6), transparent); }
-
-    .fade-up { opacity:0; transform:translateY(30px); animation:fadeUp 0.8s ease forwards; }
-    .fade-up-d1{animation-delay:0.1s} .fade-up-d2{animation-delay:0.25s} .fade-up-d3{animation-delay:0.4s} .fade-up-d4{animation-delay:0.55s} .fade-up-d5{animation-delay:0.7s}
-    @keyframes fadeUp { to{opacity:1;transform:translateY(0)} }
-
-    .hero-tag { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(0,230,118,0.06); border:1px solid rgba(0,230,118,0.15); border-radius:50px; padding:0.35rem 0.9rem; font-size:0.68rem; font-weight:500; letter-spacing:2.5px; text-transform:uppercase; color:#00e676; margin-bottom:1.8rem; width:fit-content; }
-    .hero-tag .dot { width:5px; height:5px; border-radius:50%; background:#00e676; animation:pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    .hero-heading { font-family:'Bebas Neue',sans-serif; font-size:clamp(3.2rem,6vw,5.5rem); line-height:0.95; letter-spacing:2px; color:#fff; margin-bottom:1.3rem; }
-    .hero-heading .accent { color:#00e676; }
-    .hero-heading .outline { color:transparent; -webkit-text-stroke:1.5px rgba(255,255,255,0.3); }
-
-    .hero-sub { font-size:1rem; font-weight:300; line-height:1.75; color:rgba(255,255,255,0.45); max-width:420px; margin-bottom:2rem; }
-
-    .hero-cta { display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:2rem; }
-    .cta-primary { display:inline-flex; align-items:center; gap:0.5rem; background:#00e676; color:#000; text-decoration:none; padding:0.8rem 2rem; border-radius:8px; font-weight:600; font-size:0.88rem; letter-spacing:1px; transition:all 0.25s; }
-    .cta-primary:hover { background:#00c853; transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,230,118,0.2); color:#000; }
-    .cta-secondary { display:inline-flex; align-items:center; gap:0.5rem; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.5); text-decoration:none; padding:0.8rem 2rem; border-radius:8px; font-weight:500; font-size:0.88rem; letter-spacing:1px; transition:all 0.25s; background:rgba(255,255,255,0.02); }
-    .cta-secondary:hover { border-color:rgba(255,255,255,0.25); color:#fff; }
-
-    /* Feature pills - horizontal row, compact */
-    .hero-features { display:flex; gap:0.5rem; flex-wrap:wrap; }
-    .feat-pill { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:20px; padding:0.3rem 0.75rem; font-size:0.68rem; color:rgba(255,255,255,0.5); display:inline-flex; align-items:center; gap:0.25rem; }
-    .feat-pill i { color:#00e676; font-size:0.6rem; }
-
-    .geo-lines { position:absolute; inset:0; z-index:5; pointer-events:none; }
-    .geo-lines::before { content:''; position:absolute; top:22%; left:-5%; right:65%; height:1px; background:linear-gradient(90deg,transparent,rgba(0,230,118,0.18),transparent); }
-    .geo-lines::after { content:''; position:absolute; bottom:28%; left:45%; right:-5%; height:1px; background:linear-gradient(90deg,transparent,rgba(0,230,118,0.12),transparent); }
-    .geo-corner { position:absolute; width:50px; height:50px; z-index:5; pointer-events:none; }
-    .geo-tl { top:15%; left:4%; border-top:1px solid rgba(0,230,118,0.18); border-left:1px solid rgba(0,230,118,0.18); }
-    .geo-br { bottom:18%; left:40%; border-bottom:1px solid rgba(0,230,118,0.12); border-right:1px solid rgba(0,230,118,0.12); }
-
-    /* ── How It Works Section ── */
-    .how-section {
-        padding:6rem 3rem; position:relative; z-index:10;
-        background:#121212; overflow:hidden;
-    }
-
-    /* Subtle parallax bg for this section */
-    .how-bg {
-        position:absolute; inset:0; z-index:0;
-        background:
-            radial-gradient(ellipse at 20% 50%, rgba(0,230,118,0.03) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 50%, rgba(0,230,118,0.02) 0%, transparent 50%);
-    }
-    .how-bg-grid {
-        position:absolute; inset:0;
-        background-image:linear-gradient(rgba(255,255,255,0.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.01) 1px,transparent 1px);
-        background-size:80px 80px;
-        transform:perspective(500px) rotateX(2deg);
-        transform-origin:center top;
-    }
-
-    .how-inner { max-width:1000px; margin:0 auto; text-align:center; position:relative; z-index:1; }
-    .how-label { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:#00e676; margin-bottom:0.8rem; font-weight:500; }
-    .how-title { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:3px; color:#fff; margin-bottom:1rem; }
-    .how-subtitle { font-size:0.95rem; color:#555; max-width:500px; margin:0 auto 3.5rem; line-height:1.6; }
-
-    .how-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; position:relative; }
-
-    .step-card {
-        background:#1a1a1a; border:1px solid #222; border-radius:16px;
-        padding:2rem 1.5rem; text-align:center; transition:all 0.4s;
-        opacity:0; transform:translateY(40px);
-    }
-    .step-card.visible { opacity:1; transform:translateY(0); }
-    .step-card:hover { border-color:rgba(0,230,118,0.25); transform:translateY(-4px); }
-
-    .step-num { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:rgba(0,230,118,0.15); margin-bottom:0.5rem; }
-    .step-icon { width:52px; height:52px; border-radius:12px; background:rgba(0,230,118,0.08); margin:0 auto 1rem; display:flex; align-items:center; justify-content:center; }
-    .step-icon i { color:#00e676; font-size:1.3rem; }
-    .step-title { font-weight:600; font-size:1rem; color:#eee; margin-bottom:0.5rem; }
-    .step-desc { font-size:0.83rem; color:#666; line-height:1.6; }
-
-    .step-arrow { display:none; color:#333; text-align:center; font-size:1.2rem; padding:0.5rem 0; }
-
-    @media (min-width:769px) {
-        .step-connector { display:block; position:absolute; top:45%; height:1px; background:linear-gradient(90deg,transparent,rgba(0,230,118,0.15),transparent); z-index:0; }
-        .step-connector-1 { left:33%; right:50%; }
-        .step-connector-2 { left:50%; right:17%; }
-    }
-
-    /* ── Footer ── */
-    .landing-footer { background:#0e0e0e; border-top:1px solid #1e1e1e; padding:2rem 3rem; position:relative; z-index:10; }
-    .footer-inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
-    .footer-left { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
-    .footer-brand { font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:4px; color:#00e676; }
-    .footer-copy { font-size:0.72rem; color:#444; }
-    .footer-right { display:flex; gap:1.5rem; }
-    .footer-right a { font-size:0.75rem; color:#555; text-decoration:none; transition:color 0.2s; }
-    .footer-right a:hover { color:#00e676; }
-
-    /* ── Back to top ── */
-    .back-top {
-        position:fixed; bottom:2rem; right:2rem; z-index:90;
-        width:40px; height:40px; border-radius:10px;
-        background:#1a1a1a; border:1px solid #2a2a2a;
-        display:flex; align-items:center; justify-content:center;
-        color:#00e676; text-decoration:none; font-size:1rem;
-        opacity:0; transform:translateY(10px);
-        transition:all 0.3s; pointer-events:none;
-    }
-    .back-top.show { opacity:1; transform:translateY(0); pointer-events:all; }
-    .back-top:hover { background:#222; border-color:#00e676; color:#00e676; }
-
-    /* ── Modals ── */
-    .modal-content { background:#1a1a1a; border:1px solid #2a2a2a; color:#ccc; border-radius:12px; }
-    .modal-header { border-bottom:1px solid #262626; }
-    .modal-header .btn-close { filter:invert(1); }
-    .modal-title { font-family:'Bebas Neue',sans-serif; letter-spacing:2px; color:#00e676; }
-    .modal-body { font-size:0.88rem; line-height:1.7; color:#999; }
-    .modal-body h6 { color:#ccc; font-weight:600; margin-top:1rem; }
-
-    @media (max-width:992px) {
-        .hero { grid-template-columns:1fr; }
-        .hero-right { position:absolute; inset:0; }
-        .hero-right img { filter:brightness(0.25) contrast(1.1) saturate(0.7); }
-        .hero-diagonal,.hero-slash { display:none; }
-        .hero-left { padding:6rem 2.5rem 3rem; }
-    }
-    @media (max-width:768px) {
-        .how-steps { grid-template-columns:1fr; max-width:400px; margin:0 auto; gap:1rem; }
-        .step-arrow { display:block; }
-        .step-connector { display:none!important; }
-    }
-    @media (max-width:576px) {
-        .hero-left { padding:5rem 1.5rem 2rem; }
-        .landing-nav { padding:0.8rem 1.5rem; }
-        .landing-footer { padding:1.5rem; }
-        .how-section { padding:4rem 1.5rem; }
-        .hero-features { gap:0.3rem; }
-    }
-</style>
+    <link rel="stylesheet" href="{% static 'CSS/landing.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block auth_content %}
-<!-- Loader -->
 <div class="loader" id="loader">
     <div class="loader-logo">FITTRACK</div>
     <div class="loader-bar"></div>
 </div>
 
-<!-- Nav -->
 <nav class="landing-nav">
     <a href="{% url 'fittrack:index' %}" class="landing-logo">FITTRACK</a>
     <div class="landing-nav-links">
@@ -200,14 +23,16 @@
 </nav>
 
 {% if messages %}
-<div class="landing-alert">{% for message in messages %}
-    <div class="alert alert-dismissible fade show" role="alert" style="position:relative;">{{ message }}
+<div class="landing-alert">
+    {% for message in messages %}
+    <div class="alert alert-dismissible fade show" role="alert" style="position:relative;">
+        {{ message }}
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close" style="font-size:0.55rem; position:absolute; right:0.8rem; top:50%; transform:translateY(-50%);"></button>
-    </div>{% endfor %}
+    </div>
+    {% endfor %}
 </div>
 {% endif %}
 
-<!-- Hero -->
 <section class="hero" id="top">
     <div class="hero-left">
         <div class="geo-corner geo-tl"></div>
@@ -235,7 +60,6 @@
     <div class="geo-lines"></div>
 </section>
 
-<!-- How It Works -->
 <section class="how-section">
     <div class="how-bg"><div class="how-bg-grid"></div></div>
     <div class="how-inner">
@@ -269,7 +93,6 @@
     </div>
 </section>
 
-<!-- Footer (simplified) -->
 <footer class="landing-footer">
     <div class="footer-inner">
         <div class="footer-left">
@@ -283,12 +106,10 @@
     </div>
 </footer>
 
-<!-- Back to top button -->
 <a href="#top" class="back-top" id="backTop" aria-label="Back to top">
     <i class="bi bi-chevron-up"></i>
 </a>
 
-<!-- Privacy Modal -->
 <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -310,7 +131,6 @@
     </div>
 </div>
 
-<!-- About Modal -->
 <div class="modal fade" id="aboutModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -323,7 +143,7 @@
                 <h6>Our Team</h6>
                 <p>Luke Roche, Yanyu Ge, Nacyha Fehida Mumthas Nazarudeen</p>
                 <h6>Our Mission</h6>
-                <p>Most workout trackers are inflexible. FitTrack lets you create custom exercises, build your own workouts, a.</p>
+                <p>Most workout trackers are inflexible. FitTrack lets you create custom exercises, build your own workouts.</p>
             </div>
         </div>
     </div>
@@ -331,45 +151,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-// Loader
-window.addEventListener('load', function() {
-    setTimeout(function() {
-        document.getElementById('loader').classList.add('hide');
-    }, 1400);
-});
-
-// Scroll-triggered step cards
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const delay = entry.target.getAttribute('data-delay') || 0;
-            setTimeout(() => entry.target.classList.add('visible'), delay);
-            observer.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.2 });
-document.querySelectorAll('.step-card').forEach(card => observer.observe(card));
-
-// How-section subtle parallax on scroll
-const howSection = document.querySelector('.how-bg-grid');
-window.addEventListener('scroll', function() {
-    if (howSection) {
-        const rect = howSection.getBoundingClientRect();
-        const speed = 0.15;
-        const offset = rect.top * speed;
-        howSection.style.transform = `perspective(500px) rotateX(2deg) translateY(${offset}px)`;
-    }
-});
-
-// Back to top button
-const backTop = document.getElementById('backTop');
-window.addEventListener('scroll', function() {
-    if (window.scrollY > 400) {
-        backTop.classList.add('show');
-    } else {
-        backTop.classList.remove('show');
-    }
-});
-</script>
+    <script src="{% static 'JavaScript/landing.js' %}"></script>
 {% endblock %}
