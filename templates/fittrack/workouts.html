@@ -1,0 +1,90 @@
+{% extends 'fittrack/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Your Workouts
+{% endblock %}
+
+{% block body_block %}
+<nav class="navbar navbar-dark bg-dark py-1" role="banner">
+  <div class="container">
+    <span class="navbar-brand mb-0 h6">Your Workouts</span>
+  </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="card mb-6">
+                <div class="card-body">
+                    <h2>Workouts</h2>
+                    <p class="card-text">
+                    {% if workouts %}
+                    <li class="list-group-item">
+                            <input type="search" id="workout-search-input" class="form-control ds-input" placeholder="Search..." />
+                    </li>
+                    <ul id="workouts-listing" class="list-group">
+                        
+                        {% include 'fittrack/workout_list_items.html' with workouts=workouts %}
+                        
+                    </ul>
+                    {% else %}
+                        <strong>There are no workouts present.</strong>
+                    {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2>Add Workout</h2>
+                    <p class="card-text">
+                        <form id="create-workout-form" method="post" action="{% url 'fittrack:workouts' %}">
+                            {% csrf_token %}
+                            <!-- Django WorkoutForm rendered manually (only name needed) -->
+                            <li class="list-group-item">
+                                <input type="text" name="name" id="workout-name" class="form-control" placeholder="Workout name (e.g. Push day)" maxlength="35">
+                                <button id="create-workout-btn" class="btn btn-success" type="button">Create Workout</button>
+                            </li>
+
+                            <!-- picked exercises list (ul created elsewhere or by JS) -->
+                            <ul id="picked-exercises" class="list-group mt-3">
+                                <li class="list-group-item list-group-item-secondary">Picked exercises:</li>
+                            </ul>
+                            
+
+                            <div id="create-workout-msg" class="mt-2" role="status" aria-live="polite"></div>
+                        </form>
+                    </p>
+                    
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2>Click to Add Exercise to Workout</h2>
+                    <p class="card-text">
+                    {% if exercises %}
+                    <li class="list-group-item">
+                            <input type="search" id="exercise-search-input" class="form-control ds-input" placeholder="Search..." />
+                    </li>
+                    <ul id="w-exercises-listing" class="list-group">
+                        
+                        {% include 'fittrack/exercise_list_items.html' with exercises=exercises %}
+                        
+                    </ul>
+                    {% else %}
+                        <strong>There are no exercises present.</strong>
+                    {% endif %}
+                    </p>
+            
+                    </p>
+                </div>
+                </div>
+        </div>
+    </div>    
+</div>
+{% endblock %}
+
+

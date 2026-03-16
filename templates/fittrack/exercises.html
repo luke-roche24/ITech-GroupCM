@@ -26,11 +26,7 @@
                     <ul id="exercises-listing" class="list-group">
                         
                         {% include 'fittrack/exercise_list_items.html' with exercises=exercises %}
-                        <!--{% for exercise in exercises %}
-                        <li class="list-group-item"  data-id="{{ exercise.id }}" data-name="{{ exercise.name }}" data-bodypart="{{ exercise.body_part }}">
-                            <a href="{% url 'fittrack:exercises' %}">{{ exercise.name }}</a>
-                        </li>
-                    {% endfor %}-->
+                        
                     </ul>
                     {% else %}
                         <strong>There are no exercises present.</strong>

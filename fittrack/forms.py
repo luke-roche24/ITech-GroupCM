@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from fittrack.models import Exercise, UserProfile
+from fittrack.models import Exercise, Workout, UserProfile
 
 # We could add these forms to views.py, but it makes sense to split them off into their own file.
 
@@ -23,3 +23,12 @@ class EditExerciseForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control', 'id': 'edit-name', 'name': 'name'}),
             'body_part': forms.TextInput(attrs={'class': 'form-control', 'id': 'edit-body-part', 'name': 'body_part'})
         }
+
+class WorkoutForm(forms.ModelForm):
+    class Meta:
+        model = Workout
+        fields = ('name',)
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'id': 'workout-name', 'placeholder': 'Workout Name', 'maxlength': 35}),
+        }
+

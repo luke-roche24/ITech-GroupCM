@@ -14,13 +14,14 @@ urlpatterns = [
     path('exercises/', views.ExerciseView.as_view(), name='exercises'),
     path('friends/', views.friends, name='friends'),
     path('progress/', views.progress, name='progress'),
-    path('workouts/', views.workouts, name='workouts'),
+    path('workouts/', views.WorkoutView.as_view(), name='workouts'),
     #path('register/', views.register, name='register'),
     #path('login/', views.user_login, name='login'),
     #path('restricted/', views.restricted, name='restricted'),
     #path('logout/', views.user_logout, name='logout'),
     path('search/', views.search, name='search'),
     #path('goto/', views.gotoview, name='goto'),
-    path('suggest/', views.ExerciseSuggestionView.as_view(), name='suggest'),
+    path('exercise_suggest/', views.ExerciseSuggestionView.as_view(), name='e_suggest'),
+    path('workout_suggest/', views.WorkoutSuggestionView.as_view(), name='w_suggest'),
     
 ]
