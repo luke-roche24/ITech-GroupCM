@@ -1,0 +1,428 @@
+/* ── Auth Pages Shared Styles ──
+   Used by: login.html, register.html, forgot_password.html
+*/
+
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+}
+
+.auth-wrapper::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 230, 118, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 230, 118, 0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+}
+
+/* ── Card ── */
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+    position: relative;
+    z-index: 1;
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.auth-card.wide {
+    max-width: 400px;
+}
+
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00e676, transparent);
+}
+
+/* ── Close button ── */
+.auth-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 1rem;
+    z-index: 2;
+}
+
+.auth-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ccc;
+    border-color: #444;
+}
+
+/* ── Body ── */
+.auth-body {
+    padding: 2rem;
+}
+
+/* ── Brand ── */
+.auth-brand {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.auth-brand a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 5px;
+    color: #00e676;
+    text-decoration: none;
+}
+
+/* ── Title & Subtitle ── */
+.auth-title {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #f0f0f0;
+    margin-bottom: 1.5rem;
+}
+
+.auth-subtitle {
+    text-align: center;
+    font-size: 0.83rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Labels ── */
+.auth-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #888;
+    margin-bottom: 0.35rem;
+}
+
+.auth-label .optional {
+    color: #444;
+    font-weight: 400;
+}
+
+/* ── Inputs ── */
+.auth-input,
+.auth-card .form-control {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid #333 !important;
+    border-radius: 8px;
+    color: #f0f0f0 !important;
+    font-size: 0.9rem;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.auth-input::placeholder,
+.auth-card .form-control::placeholder {
+    color: #555 !important;
+}
+
+.auth-input:focus,
+.auth-card .form-control:focus {
+    outline: none;
+    border-color: #00e676 !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1) !important;
+}
+
+/* Select dropdown */
+.auth-card select.form-control {
+    appearance: auto;
+    -webkit-appearance: auto;
+}
+
+.auth-card select.form-control option {
+    background: #1a1a1a;
+    color: #f0f0f0;
+}
+
+/* Input validation styling */
+.input-ok {
+    border-color: rgba(0, 230, 118, 0.4) !important;
+}
+
+.input-err {
+    border-color: rgba(255, 82, 82, 0.4) !important;
+}
+
+/* ── Form groups ── */
+.auth-group {
+    margin-bottom: 1rem;
+}
+
+/* ── Password show/hide toggle ── */
+.pw-wrapper {
+    position: relative;
+}
+
+.pw-wrapper .auth-input,
+.pw-wrapper .form-control {
+    padding-right: 2.8rem !important;
+}
+
+.pw-toggle {
+    position: absolute;
+    right: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 0.2rem;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.pw-toggle:hover {
+    color: #00e676;
+}
+
+/* ── Hints ── */
+.auth-hint {
+    font-size: 0.72rem;
+    color: #555;
+    margin-top: 0.35rem;
+    line-height: 1.5;
+}
+
+.auth-hint i {
+    color: #00e676;
+    margin-right: 0.2rem;
+    font-size: 0.65rem;
+}
+
+/* ── Section divider (used in register) ── */
+.auth-section-label {
+    font-size: 0.7rem;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 1.2rem 0 0.8rem;
+    padding-top: 1rem;
+    border-top: 1px solid #222;
+}
+
+/* ── Remember me row (login) ── */
+.remember-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -0.3rem;
+    margin-bottom: 1rem;
+}
+
+.remember-check {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.remember-check input[type="checkbox"] {
+    accent-color: #00e676;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+}
+
+.remember-check label {
+    font-size: 0.78rem;
+    color: #666;
+    cursor: pointer;
+}
+
+/* ── Forgot password link ── */
+.auth-forgot a {
+    color: #555;
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.auth-forgot a:hover {
+    color: #00e676;
+}
+
+/* ── Submit button ── */
+.auth-submit {
+    width: 100%;
+    padding: 0.7rem;
+    background: #00e676;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.auth-submit:hover {
+    background: #00c853;
+    transform: translateY(-1px);
+}
+
+/* Loading state */
+.auth-submit.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: none;
+}
+
+.auth-submit.loading .spinner {
+    display: block;
+}
+
+.auth-submit.loading .btn-text {
+    display: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Divider ── */
+.auth-divider {
+    border: none;
+    border-top: 1px solid #262626;
+    margin: 1.2rem 0;
+}
+
+/* ── Footer ── */
+.auth-footer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.auth-footer a {
+    color: #00e676;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    color: #00c853;
+}
+
+/* ── Error messages ── */
+.auth-error {
+    background: rgba(255, 82, 82, 0.08);
+    border: 1px solid rgba(255, 82, 82, 0.15);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    color: #ff8a80;
+    font-size: 0.83rem;
+    margin-bottom: 1rem;
+}
+
+.auth-error div {
+    margin-bottom: 0.15rem;
+}
+
+.auth-error div:last-child {
+    margin-bottom: 0;
+}
+
+/* ── Django help text ── */
+.helptext,
+.form-text {
+    font-size: 0.72rem !important;
+    color: #444 !important;
+    margin-top: 0.3rem;
+}
+
+.helptext ul {
+    margin: 0.2rem 0 0;
+    padding-left: 1rem;
+}
+
+/* ── Forgot password: step indicator ── */
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #333;
+    transition: all 0.3s;
+}
+
+.step-dot.active {
+    background: #00e676;
+    box-shadow: 0 0 8px rgba(0, 230, 118, 0.3);
+}
+
+.step-dot.done {
+    background: rgba(0, 230, 118, 0.3);
+}
+
+/* ── Forgot password: question box ── */
+.question-box {
+    background: rgba(0, 230, 118, 0.05);
+    border: 1px solid rgba(0, 230, 118, 0.12);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.88rem;
+    color: #ccc;
+    text-align: center;
+}
+
+.question-box .user-tag {
+    display: inline-block;
+    background: rgba(0, 230, 118, 0.1);
+    color: #00e676;
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
