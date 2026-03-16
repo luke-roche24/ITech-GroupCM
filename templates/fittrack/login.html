@@ -22,15 +22,28 @@
     .pw-wrapper .auth-input { padding-right:2.8rem; }
     .pw-toggle { position:absolute; right:0.7rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#555; cursor:pointer; padding:0.2rem; font-size:1rem; transition:color 0.2s; }
     .pw-toggle:hover { color:#00e676; }
-    .auth-submit { width:100%; padding:0.7rem; background:#00e676; color:#000; border:none; border-radius:8px; font-weight:600; font-size:0.9rem; letter-spacing:1px; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s; margin-top:0.5rem; }
+    /* Remember me */
+    .remember-row { display:flex; justify-content:space-between; align-items:center; margin-top:-0.3rem; margin-bottom:1rem; }
+    .remember-check { display:flex; align-items:center; gap:0.4rem; }
+    .remember-check input[type="checkbox"] { accent-color:#00e676; width:14px; height:14px; cursor:pointer; }
+    .remember-check label { font-size:0.78rem; color:#666; cursor:pointer; }
+    .auth-forgot a { color:#555; font-size:0.78rem; text-decoration:none; transition:color 0.2s; }
+    .auth-forgot a:hover { color:#00e676; }
+    /* Submit with loading */
+    .auth-submit { width:100%; padding:0.7rem; background:#00e676; color:#000; border:none; border-radius:8px; font-weight:600; font-size:0.9rem; letter-spacing:1px; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:0.5rem; }
     .auth-submit:hover { background:#00c853; transform:translateY(-1px); }
+    .auth-submit.loading { opacity:0.7; pointer-events:none; }
+    .spinner { width:16px; height:16px; border:2px solid rgba(0,0,0,0.2); border-top-color:#000; border-radius:50%; animation:spin 0.6s linear infinite; display:none; }
+    .auth-submit.loading .spinner { display:block; }
+    .auth-submit.loading .btn-text { display:none; }
+    @keyframes spin { to { transform:rotate(360deg); } }
     .auth-divider { border:none; border-top:1px solid #262626; margin:1.2rem 0; }
     .auth-footer { text-align:center; font-size:0.85rem; color:#555; }
     .auth-footer a { color:#00e676; text-decoration:none; font-weight:600; }
-    .auth-forgot { text-align:right; margin-top:-0.3rem; margin-bottom:1rem; }
-    .auth-forgot a { color:#555; font-size:0.78rem; text-decoration:none; transition:color 0.2s; }
-    .auth-forgot a:hover { color:#00e676; }
     .auth-error { background:rgba(255,82,82,0.08); border:1px solid rgba(255,82,82,0.15); border-radius:8px; padding:0.5rem 0.8rem; color:#ff8a80; font-size:0.83rem; margin-bottom:1rem; }
+    /* Input validation icons */
+    .input-ok { border-color:rgba(0,230,118,0.4)!important; }
+    .input-err { border-color:rgba(255,82,82,0.4)!important; }
 </style>
 {% endblock %}
 {% block auth_content %}
@@ -43,7 +56,7 @@
             {% if messages %}{% for message in messages %}
             <div class="auth-error">{{ message }}</div>
             {% endfor %}{% endif %}
-            <form method="POST" action="{% url 'fittrack:login' %}">
+            <form method="POST" action="{% url 'fittrack:login' %}" id="loginForm">
                 {% csrf_token %}
                 <div class="auth-group">
                     <label class="auth-label" for="username">Username</label>
@@ -58,10 +71,19 @@
                         </button>
                     </div>
                 </div>
-                <div class="auth-forgot">
-                    <a href="{% url 'fittrack:forgot_password' %}">Forgot password?</a>
+                <div class="remember-row">
+                    <div class="remember-check">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <div class="auth-forgot">
+                        <a href="{% url 'fittrack:forgot_password' %}">Forgot password?</a>
+                    </div>
                 </div>
-                <button type="submit" class="auth-submit">LOGIN</button>
+                <button type="submit" class="auth-submit" id="submitBtn">
+                    <span class="btn-text">LOGIN</span>
+                    <div class="spinner"></div>
+                </button>
             </form>
             <hr class="auth-divider">
             <div class="auth-footer">Don't have an account? <a href="{% url 'fittrack:register' %}">Register</a></div>
@@ -74,13 +96,24 @@
 function togglePw(id, btn) {
     const input = document.getElementById(id);
     const icon = btn.querySelector('i');
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'bi bi-eye-slash';
-    } else {
-        input.type = 'password';
-        icon.className = 'bi bi-eye';
-    }
+    if (input.type === 'password') { input.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+    else { input.type = 'password'; icon.className = 'bi bi-eye'; }
 }
+
+// Real-time input validation styling
+document.getElementById('username').addEventListener('input', function() {
+    this.classList.toggle('input-ok', this.value.length >= 1);
+    this.classList.remove('input-err');
+});
+
+document.getElementById('password').addEventListener('input', function() {
+    this.classList.toggle('input-ok', this.value.length >= 1);
+    this.classList.remove('input-err');
+});
+
+// Loading animation on submit
+document.getElementById('loginForm').addEventListener('submit', function() {
+    document.getElementById('submitBtn').classList.add('loading');
+});
 </script>
 {% endblock %}
