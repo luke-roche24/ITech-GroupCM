@@ -1,4 +1,4 @@
-# views.py - cleaned/tidied version (preserves original functionality)
+
 from datetime import datetime
 import re
 
@@ -73,7 +73,7 @@ class ExerciseView(LoginRequiredMixin, View):
                 form.save()
                 return redirect(reverse('fittrack:exercises'))
             else:
-                # preserve original behavior: build context but redirect (as in original file)
+                
                 exercise_list = m.Exercise.objects.filter(owner=request.user).order_by('name')
                 context_dict = {
                     'exercises': exercise_list,
@@ -86,7 +86,7 @@ class ExerciseView(LoginRequiredMixin, View):
 
         if form.is_valid():
             exercise = form.save(commit=False)
-            # assign current logged-in user as owner (replaces User.objects.first())
+            
             exercise.owner = request.user
             exercise.save()
             return redirect(reverse('fittrack:exercises'))
@@ -116,7 +116,7 @@ class WorkoutView(LoginRequiredMixin, View):
             workout_id = request.POST.get('workout_id')
             workout = get_object_or_404(m.Workout, pk=workout_id, owner=request.user)
 
-            # original code had commented owner checks; preserving behavior
+            
             workout.delete()
 
             if request.is_ajax() or request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -149,7 +149,7 @@ class WorkoutView(LoginRequiredMixin, View):
 
             with transaction.atomic():
                 workout = form.save(commit=False)
-                # assign current logged-in user as owner (replaces User.objects.first())
+                
                 workout.owner = request.user
                 workout.save()
 
@@ -160,9 +160,7 @@ class WorkoutView(LoginRequiredMixin, View):
                     except m.Exercise.DoesNotExist:
                         transaction.set_rollback(True)
                         return JsonResponse({'success': False, 'error': f'Permission denied for exercise id {ex["exercise_id"]}'}, status=403)
-                    #exercise_obj = get_object_or_404(m.Exercise, id=ex['exercise_id'])
-
-                    # original code had commented owner checks; preserving behavior
+                   
                     we = m.WorkoutExercise.objects.create(
                         workout=workout,
                         exercise=exercise_obj,

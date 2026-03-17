@@ -470,7 +470,7 @@
 
 
     .list-group-item {
-        background: var(--bg-card);            /* match ft-card */
+        background: var(--bg-card);            
         border: 1px solid var(--border-color);
         border-radius: 8px;
         color: #fff;
@@ -482,40 +482,40 @@
         cursor: pointer;
         
 
-        /* keep your existing transition */
+
         transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
     }
 
 
-    /* Hover effect like ft-card hover */
+    
     .list-group-item:hover {
         background: var(--bg-card-hover);
         border-color: var(--accent);
-        position: relative;   /* allow z-index to take effect */
+        position: relative;  
         z-index: 1;
     }
 
 
-    /* Active / selected state - your existing rules */
+
     .list-group-item.active {
         background-color: rgba(var(--accent-rgb), 0.12);
         border-color: rgba(var(--accent-rgb), 0.25);
         color: #000;
     }
 
-    /* Flash animation - keep existing */
+
     @keyframes ft-warmFlash {
         0%   { background-color: rgba(var(--accent-rgb), 0.28); }
         60%  { background-color: rgba(var(--accent-rgb), 0.14); }
         100% { background-color: rgba(var(--accent-rgb), 0.12); }
     }
 
-    /* temporary class to trigger the warm flash */
+    
     .list-group-item.flash {
         animation: ft-warmFlash 280ms ease forwards;
     }
 
-    /* Search inputs inside list-group-items */
+    
     .list-group-item input.form-control {
         margin-bottom: 0.5rem;
         border-radius: 8px;

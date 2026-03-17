@@ -141,7 +141,7 @@
 
   // Remove the picked item
   $doc.on('click', '#picked-exercises .remove-picked', function (e) {
-    e.stopPropagation(); // avoid triggering parent clicks
+    e.stopPropagation(); 
     $(this).closest('li').remove();
   });
 
@@ -251,7 +251,7 @@
       url: $createWorkoutForm.attr('action'),
       method: 'POST',
       data: data,
-      traditional: true, // order arrays for exercise order as exercise_id[]=1&exercise_id[]=2
+      traditional: true, 
       success(resp) {
         if (resp && resp.success) {
           showMessage($createWorkoutMsg, 'Workout created (id: ' + resp.workout_id + ').');
@@ -332,7 +332,7 @@
   $('.add-set-btn').click(function() {
       var exerciseId = $(this).data('exercise');
       var table = $('#table-' + exerciseId + ' tbody');
-      var totalFormsInput = $('#id_exercise_' + exerciseId + '-TOTAL_FORMS'); // management form input
+      var totalFormsInput = $('#id_exercise_' + exerciseId + '-TOTAL_FORMS'); 
       var totalForms = parseInt(totalFormsInput.val());
 
       // Clone empty row from last row
