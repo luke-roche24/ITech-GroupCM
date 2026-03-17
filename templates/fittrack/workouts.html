@@ -1,99 +1,92 @@
-<!-- File: workouts.html 
-This html represents the workouts page 
--->
-
+{% extends 'fittrack/base.html' %}
 {% load static %}
 
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>FitTrack — Your Workouts</title>
-<link rel="stylesheet" href="{% static 'CSS/styles.css' %}" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">FITTRACK</div>
-      <nav>
-        <div><strong>Main</strong></div>
-        <a href="/fittrack/dashboard/" class="nav-link">Dashboard</a>
-        <a href="/fittrack/exercises/" class="nav-link">Your Exercises</a>
-        <a href="/fittrack/workouts/" class="nav-link">Your Workouts</a>
-        <a href="/fittrack/current/" class="nav-link">Current Plan</a>
-        <div style="margin-top:12px"><strong>Progress</strong></div>
-        <a href="/fittrack/progress/" class="nav-link">Trends</a>
-        <a href="#">Personal Bests</a>
-        <div style="margin-top:12px"><strong>Friends</strong></div>
-        <a href="/fittrack/friends/" class="nav-link">Friends List</a>
-        <div style="margin-top:12px"><strong>Account</strong></div>
-        <a href="#">Profile</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
-      </nav>
-    </aside>
+{% block title_block %}
+    Your Workouts
+{% endblock %}
 
-    <div class="main-area">
-      <header class="topbar"><h1>Your Workouts</h1></header>
+{% block content %}
+<div class="top-bar">
+    <h1>Your Workouts</h1>
+</div>
 
-      <main class="content">
-        <div class="workouts-grid">
-          <div class="search-workouts card">
-            <div class="search-header">Search Workouts</div>
 
-            <ul class="workout-list" style="margin:0;padding:0">
-              <li>Legs Day</li>
-              <li>Push Day</li>
-              <li>Pull Day</li>
-              <li>Upper Body</li>
-              <li>Lower Body</li>
-              <li class="active">Full Body</li>
-              <li>Quick Abs</li>
-              <li>Shoulder Day</li>
-            </ul>
-
-            <div style="margin-top:12px;padding:12px;background:#d9d9d9">
-              <strong style="display:block;margin-bottom:8px">Exercise</strong>
-              <table class="workout-table">
-                <tr><td>Barbell Bench Press</td><td>3</td><td>8</td><td>95</td></tr>
-                <tr><td>Back Squat</td><td>3</td><td>6</td><td>80</td></tr>
-                <tr><td>Deadlift</td><td>4</td><td>4</td><td>102.5</td></tr>
-                <tr><td>Cable Curl</td><td>3</td><td>8</td><td>15</td></tr>
-              </table>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="card shadow-sm mb-6">
+                <div class="card-body">
+                    <h2>Workouts</h2>
+                    <p class="card-text">
+                    {% if workouts %}
+                    <li class="list-group-item">
+                            <input type="search" id="workout-search-input" class="form-control ds-input" placeholder="Search..." />
+                    </li>
+                    <ul id="workouts-listing" class="list-group">
+                        
+                        {% include 'fittrack/workout_list_items.html' with workouts=workouts %}
+                        
+                    </ul>
+                    {% else %}
+                        <strong>There are no workouts present.</strong>
+                    {% endif %}
+                    </p>
+                </div>
             </div>
-          </div>
-
-          <div class="right-column">
-            <div class="card">
-              <div style="background:var(--muted);padding:12px;text-align:center;font-size:20px">Enter New Workout Name</div>
-              <table class="workout-table" style="margin-top:8px">
-                <tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Weight</th></tr>
-                <tr><td>Press-Ups</td><td>3</td><td>8</td><td>95</td></tr>
-                <tr><td>Back Squat</td><td>3</td><td>6</td><td>80</td></tr>
-                <tr><td>Barbell Row</td><td>4</td><td>4</td><td>102.5</td></tr>
-                <tr><td>Tricep Pulldowns</td><td>3</td><td>8</td><td>15</td></tr>
-              </table>
-              <button class="save-btn">Save</button>
-            </div>
-
-            <div class="card" style="margin-top:18px">
-              <div style="background:var(--muted);padding:12px;text-align:center;font-size:20px">Search Exercises</div>
-              <div style="background:#6f6f6f;color:white;padding:8px 12px;font-weight:700">Arms</div>
-              <ul style="list-style:none;margin:0;padding:0">
-                <li style="padding:12px;border-bottom:1px solid #eee">Cable Curl</li>
-                <li style="padding:12px;border-bottom:1px solid #eee">Skullcrushers</li>
-                <li style="padding:12px;border-bottom:1px solid #eee">Hammer Curl</li>
-                <li style="padding:12px;border-bottom:1px solid #eee;background:var(--accent);color:white">Tricep Pulldowns</li>
-              </ul>
-              <div style="text-align:center;margin-top:12px">
-                <button class="save-btn">Add</button>
-              </div>
-            </div>
-          </div>
         </div>
-      </main>
-    </div>
-  </div>
-</body>
-</html>
+    
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h2>Add Workout</h2>
+                    <p class="card-text">
+                        <form id="create-workout-form" class="form-control" method="post" action="{% url 'fittrack:workouts' %}">
+                            {% csrf_token %}
+                            
+                            <li class="list-group-item">
+                                <input type="text" name="name" id="workout-name" class="form-control" placeholder="Workout name (e.g. Push day)" maxlength="35">
+                                <br />
+                                <button id="create-workout-btn" class="btn btn-accent" type="button">Create Workout</button>
+                            </li>
+
+                        
+                            <ul id="picked-exercises" class="list-group mt-3">
+                                <li class="list-group-item list-group-item-secondary">Picked exercises:</li>
+                            </ul>
+                            
+
+                            <div id="create-workout-msg" class="mt-2" role="status" aria-live="polite"></div>
+                        </form>
+                    </p>
+                    
+                </div>
+            </div>
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h2>Click to Add Exercise to Workout</h2>
+                    <p class="card-text">
+                    {% if exercises %}
+                    <li class="list-group-item">
+                            <input type="search" id="exercise-search-input" class="form-control ds-input" placeholder="Search..." />
+                    </li>
+                    <ul id="w-exercises-listing" class="list-group">
+                        
+                        {% include 'fittrack/exercise_list_items.html' with exercises=exercises %}
+                        
+                    </ul>
+                    {% else %}
+                        <strong>There are no exercises present.</strong>
+                    {% endif %}
+                    </p>
+            
+                    </p>
+                </div>
+                </div>
+        </div>
+    </div>    
+</div>
+<script src="{% static 'JS/workouts.js' %}" crossorigin="anonymous"></script>
+{% endblock %}
+
+
+

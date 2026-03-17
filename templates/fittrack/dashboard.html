@@ -1,67 +1,64 @@
-<!-- File: dashboard.html 
-This html represents the dashboard page 
--->
+{% extends 'fittrack/base.html' %}
 {% load static %}
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FitTrack — Dashboard</title>
-  <link rel="stylesheet" href="{% static 'CSS/styles.css' %}" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">FITTRACK</div>
-      <nav>
-        <div><strong>Main</strong></div>
-        <a href="/fittrack/dashboard/" class="nav-link">Dashboard</a>
-        <a href="/fittrack/exercises/" class="nav-link">Your Exercises</a>
-        <a href="/fittrack/workouts/" class="nav-link">Your Workouts</a>
-        <a href="/fittrack/current/" class="nav-link">Current Plan</a>
-        <div style="margin-top:12px"><strong>Progress</strong></div>
-        <a href="/fittrack/progress/" class="nav-link">Trends</a>
-        <a href="#">Personal Bests</a>
-        <div style="margin-top:12px"><strong>Friends</strong></div>
-        <a href="/fittrack/friends/" class="nav-link">Friends List</a>
-        <div style="margin-top:12px"><strong>Account</strong></div>
-        <a href="#">Profile</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
-      </nav>
-    </aside>
+{% block title %}FitTrack - Dashboard{% endblock %}
 
-    <div class="main-area">
-      <header class="topbar">
-        <h1>Hi, [Username]</h1>
-        <div class="username">&nbsp;</div>
-      </header>
+{% block content %}
+<div class="top-bar">
+    <h1>Hi, {{ username }}</h1>
+</div>
 
-      <main class="content">
-        <div class="grid-2x2">
-          <div class="card large">Current Workout Schedule</div>
-          <div class="card large">Exercise Trends</div>
-          <div class="card large">Log Session</div>
-          <div class="card large">Recent Friends Workouts</div>
+<div class="row g-4">
+    <!-- Current Workout Schedule Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">
+                    <i class="bi bi-clipboard-data me-2"></i>Current Workout Schedule
+                </h5>
+                <p class="text-muted">Your plan for this week will appear here.</p>
+                <a href="{% url 'fittrack:current' %}" class="btn btn-outline-dark btn-sm">View Plan</a>
+            </div>
         </div>
-      </main>
     </div>
-  </div>
-</body>
-</html>
 
+    <!-- Exercise Trends Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">
+                    <i class="bi bi-graph-up me-2"></i>Exercise Trends
+                </h5>
+                <p class="text-muted">Track your progress over time.</p>
+                <a href="{% url 'fittrack:progress' %}" class="btn btn-outline-dark btn-sm">View Progress</a>
+            </div>
+        </div>
+    </div>
 
+    <!-- Log Session Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">
+                    <i class="bi bi-pencil-square me-2"></i>Log Session
+                </h5>
+                <p class="text-muted">Record today's workout.</p>
+                <a href="{% url 'fittrack:log_workout' %}" class="btn btn-outline-dark btn-sm">Start Logging</a>
+            </div>
+        </div>
+    </div>
 
-
-
-
-
-
-
-
-
-
-
-
+    <!-- Friends Workouts Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">
+                    <i class="bi bi-people me-2"></i>Recent Friends Workouts
+                </h5>
+                <p class="text-muted">See what your friends are training.</p>
+                <a href="{% url 'fittrack:friends' %}" class="btn btn-outline-dark btn-sm">View Friends</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

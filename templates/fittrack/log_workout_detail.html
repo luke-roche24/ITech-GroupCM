@@ -1,0 +1,86 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Log Workout
+{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h1>Log Workout</h1>
+</div>
+
+<div class="container mt-4">
+    {% if exercises %}
+        <form method="post">
+            {% csrf_token %}
+
+            {% for exercise, formset in formsets %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h4>{{ exercise.exercise.name }}</h4>
+                    </div>
+                    <div class="card-body">
+
+                        {{ formset.management_form }}
+
+                        <table class="table table-bordered mb-0" id="table-{{ exercise.id }}">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Set #</th>
+                                    <th>Reps</th>
+                                    <th>Weight</th>
+                                    <th>Failure</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for form in formset %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ form.reps }}</td>
+                                        <td>{{ form.weight }}</td>
+                                        <td>{{ form.failure }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <br />
+                        <button type="button" class="btn btn-sm btn-accent add-set-btn" data-exercise="{{ exercise.id }}">
+                            + Add Set
+                        </button>
+
+                    </div>
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-accent mb-4">Save Workout</button>
+        </form>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Add Another Exercise</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="exercise-select" class="col-sm-2 col-form-label">Select Exercise:</label>
+                    <div class="col-sm-8">
+                        <select id="exercise-select" class="form-control">
+                            <option value="">---------</option>
+                            {% for ex in all_exercises %}
+                                <option value="{{ ex.id }}">{{ ex.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" id="add-exercise-btn" class="btn btn-primary">Add Exercise</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">Select a workout above to log its exercises.</div>
+    {% endif %}
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Log Workout
+{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h1>Log Workout</h1>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-6">
+                <div class="card-body">
+                    <h2>Exercises</h2>
+                    <form role="form" class="d-flex w-50" id="choose_workout" method="post" action="{% url 'fittrack:log_workout' %}">
+                        {% csrf_token %}
+                        <div class="input-group w-100">
+                            {{ choose_workout.workout }}
+                            <div class="input-group-append">
+                                <button class="btn btn-accent" type="submit">Select Workout</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+
+{% endblock %}
+
+
+

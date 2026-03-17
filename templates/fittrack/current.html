@@ -1,72 +1,102 @@
-<!-- File: current.html 
-This html file represents the current plan page 
--->
+{% extends 'fittrack/base.html' %}
 {% load static %}
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FitTrack — Current Plan</title>
-  <link rel="stylesheet" href="{% static 'CSS/styles.css' %}" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">FITTRACK</div>
-      <nav>
-        <div><strong>Main</strong></div>
-        <a href="/fittrack/dashboard/" class="nav-link">Dashboard</a>
-        <a href="/fittrack/exercises/" class="nav-link">Your Exercises</a>
-        <a href="/fittrack/workouts/" class="nav-link">Your Workouts</a>
-        <a href="/fittrack/current/" class="nav-link">Current Plan</a>
-        <div style="margin-top:12px"><strong>Progress</strong></div>
-        <a href="/fittrack/progress/" class="nav-link">Trends</a>
-        <a href="#">Personal Bests</a>
-        <div style="margin-top:12px"><strong>Friends</strong></div>
-        <a href="/fittrack/friends/" class="nav-link">Friends List</a>
-        <div style="margin-top:12px"><strong>Account</strong></div>
-        <a href="#">Profile</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
-      </nav>
-    </aside>
+{% block title %}FitTrack - Current Plan{% endblock %}
 
-    <div class="main-area">
-      <header class="topbar">
-        <h1>Current Plan</h1>
-        <div class="username">Hi, <span>Username</span></div>
-      </header>
+{% block content %}
+<div class="top-bar">
+    <h1><i class="bi bi-clipboard2-check-fill me-2"></i>Current Plan</h1>
+</div>
 
-      <main class="content">
-        <div class="current-grid">
-          <aside class="plan-list">
-            <div class="plan-day"><span class="dow">M</span><div class="title">Workout 1</div><a class="edit">Edit</a></div>
-            <div class="plan-day add"><span class="dow">T</span><div class="title">+ Add Workout</div></div>
-            <div class="plan-day"><span class="dow">W</span><div class="title">Workout 2</div><a class="edit">Edit</a></div>
-            <div class="plan-day"><span class="dow">T</span><div class="title">Workout 3</div><a class="edit">Edit</a></div>
-            <div class="plan-day"><span class="dow">F</span><div class="title">Workout 4</div><a class="edit">Edit</a></div>
-            <div class="plan-day add"><span class="dow">S</span><div class="title">+ Add Workout</div></div>
-            <div class="plan-day"><span class="dow">S</span><div class="title">Workout 5</div><a class="edit">Edit</a></div>
-
-            <div class="browse">
-              <h3>Browse Workouts</h3>
-              <select><option>Dropdown Menu</option></select>
-              <button class="btn">Log</button>
+<div class="row g-4">
+    <!-- Weekly Schedule -->
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">Weekly Schedule</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong class="me-2">M</strong> Workout 1</span>
+                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
+                    </li>
+                    <li class="list-group-item text-muted">
+                        <strong class="me-2">T</strong> + Add Workout
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong class="me-2">W</strong> Workout 2</span>
+                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong class="me-2">T</strong> Workout 3</span>
+                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong class="me-2">F</strong> Workout 4</span>
+                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
+                    </li>
+                    <li class="list-group-item text-muted">
+                        <strong class="me-2">S</strong> + Add Workout
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong class="me-2">S</strong> Workout 5</span>
+                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
+                    </li>
+                </ul>
             </div>
-          </aside>
-
-          <section class="plan-logs">
-            <div class="card log">Log Workout 1</div>
-            <div class="card log">Log Workout 2</div>
-            <div class="card log">Log Workout 3</div>
-            <div class="card log">Log Workout 4</div>
-            <div class="card log">Log Workout 5</div>
-          </section>
         </div>
-      </main>
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <h6 class="fw-bold">Browse Workouts</h6>
+                <select class="form-select mb-2">
+                    <option selected>Select a workout...</option>
+                </select>
+                <button class="btn btn-dark w-100">
+                    <i class="bi bi-play-fill me-1"></i>Log Workout
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
-</body>
-</html>
+
+    <!-- Log Cards -->
+    <div class="col-md-7">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <p class="text-muted mb-0">Log Workout 1</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <p class="text-muted mb-0">Log Workout 2</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <p class="text-muted mb-0">Log Workout 3</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <p class="text-muted mb-0">Log Workout 4</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <p class="text-muted mb-0">Log Workout 5</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

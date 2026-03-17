@@ -1,0 +1,66 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+{% block title %}FitTrack - Login{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'CSS/auth.css' %}">
+{% endblock %}
+
+{% block auth_content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <a href="{% url 'fittrack:index' %}" class="auth-close" aria-label="Back to home"><i class="bi bi-x-lg"></i></a>
+        <div class="auth-body">
+            <div class="auth-brand"><a href="{% url 'fittrack:index' %}">FITTRACK</a></div>
+            <div class="auth-title">Welcome back</div>
+
+            {% if messages %}{% for message in messages %}
+            <div class="auth-error">{{ message }}</div>
+            {% endfor %}{% endif %}
+
+            <form method="POST" action="{% url 'fittrack:login' %}" id="loginForm">
+                {% csrf_token %}
+                <div class="auth-group">
+                    <label class="auth-label" for="username">Username</label>
+                    <input type="text" class="auth-input" id="username" name="username" placeholder="Enter your username" required autofocus>
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="password">Password</label>
+                    <div class="pw-wrapper">
+                        <input type="password" class="auth-input" id="password" name="password" placeholder="Enter your password" required>
+                        <button type="button" class="pw-toggle" onclick="togglePw('password', this)" aria-label="Show password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="remember-row">
+                    <div class="remember-check">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <div class="auth-forgot">
+                        <a href="{% url 'fittrack:forgot_password' %}">Forgot password?</a>
+                    </div>
+                </div>
+                <button type="submit" class="auth-submit" id="submitBtn">
+                    <span class="btn-text">LOGIN</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+
+            <hr class="auth-divider">
+            <div class="auth-footer">Don't have an account? <a href="{% url 'fittrack:register' %}">Register</a></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'JS/auth.js' %}"></script>
+<script>
+    setupInputValidation('username');
+    setupInputValidation('password');
+    setupFormLoading('loginForm', 'submitBtn');
+</script>
+{% endblock %}
+

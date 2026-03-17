@@ -1,0 +1,6 @@
+
+{% for workout in workouts %}
+    {% include "fittrack/workout_list_item.html" with workout=workout %}
+{% empty %}
+<li class="list-group-item"><em>No workouts found.</em></li>
+{% endfor %}

@@ -1,0 +1,77 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+{% block title %}FitTrack - Register{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'CSS/auth.css' %}">
+{% endblock %}
+
+{% block auth_content %}
+<div class="auth-wrapper">
+    <div class="auth-card wide">
+        <a href="{% url 'fittrack:index' %}" class="auth-close" aria-label="Back to home"><i class="bi bi-x-lg"></i></a>
+        <div class="auth-body">
+            <div class="auth-brand"><a href="{% url 'fittrack:index' %}">FITTRACK</a></div>
+            <div class="auth-title">Create your account</div>
+
+            {% if form.errors %}
+            <div class="auth-error">
+                {% for field, errors in form.errors.items %}{% for error in errors %}<div>{{ error }}</div>{% endfor %}{% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'fittrack:register' %}">
+                {% csrf_token %}
+                <div class="auth-group">
+                    <label class="auth-label" for="id_username">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_email">Email <span class="optional">(optional)</span></label>
+                    {{ form.email }}
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_password">Password</label>
+                    <div class="pw-wrapper">
+                        {{ form.password }}
+                        <button type="button" class="pw-toggle" onclick="togglePw('id_password', this)" aria-label="Show password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="auth-hint"><i class="bi bi-info-circle"></i> At least 8 characters, not too common, can't be all numbers</div>
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_password_confirm">Confirm Password</label>
+                    <div class="pw-wrapper">
+                        {{ form.password_confirm }}
+                        <button type="button" class="pw-toggle" onclick="togglePw('id_password_confirm', this)" aria-label="Show password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-section-label">Security Question (for password recovery)</div>
+
+                <div class="auth-group">
+                    <label class="auth-label" for="id_security_question">Security Question</label>
+                    {{ form.security_question }}
+                </div>
+                <div class="auth-group">
+                    <label class="auth-label" for="id_security_answer">Your Answer</label>
+                    {{ form.security_answer }}
+                    <div class="auth-hint"><i class="bi bi-shield-lock"></i> Used to reset your password if you forget it</div>
+                </div>
+
+                <button type="submit" class="auth-submit">CREATE ACCOUNT</button>
+            </form>
+
+            <hr class="auth-divider">
+            <div class="auth-footer">Already have an account? <a href="{% url 'fittrack:login' %}">Login</a></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'JS/auth.js' %}"></script>
+{% endblock %}
