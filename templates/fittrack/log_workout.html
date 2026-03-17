@@ -1,78 +1,34 @@
 {% extends 'fittrack/base.html' %}
-{% load staticfiles %}
+{% load static %}
 
 {% block title_block %}
-    Your Exercises
+    Log Workout
 {% endblock %}
 
-{% block body_block %}
-<nav class="navbar navbar-dark bg-dark py-1" role="banner">
-  <div class="container">
-    <span class="navbar-brand mb-0 h6">Your Exercises</span>
-  </div>
-</nav>
+{% block content %}
+<div class="top-bar">
+    <h1>Log Workout</h1>
+</div>
+
 
 <div class="container">
     <div class="row">
-        <div class="col-12 col-md-9">
-            <div class="card mb-6">
+        <div class="col-12">
+            <div class="card shadow-sm mb-6">
                 <div class="card-body">
                     <h2>Exercises</h2>
-                    <p class="card-text">
-                    {% if exercises %}
-                    <li class="list-group-item">
-                            <input type="search" id="exercise-search-input" class="form-control ds-input" placeholder="Search..." />
-                    </li>
-                    <ul id="exercises-listing" class="list-group">
-                        
-                        {% include 'fittrack/exercise_list_items.html' with exercises=exercises %}
-                        
-                    </ul>
-                    {% else %}
-                        <strong>There are no exercises present.</strong>
-                    {% endif %}
-                    </p>
+                    <form role="form" class="d-flex w-50" id="choose_workout" method="post" action="{% url 'fittrack:log_workout' %}">
+                        {% csrf_token %}
+                        <div class="input-group w-100">
+                            {{ choose_workout.workout }}
+                            <div class="input-group-append">
+                                <button class="btn btn-accent" type="submit">Select Workout</button>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
             </div>
-        </div>
-    
-        <div class="col-md-3">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h2>Add Exercise</h2>
-                    <p class="card-text">
-                    <form role="form" id="exercise_form" method="post" action="{% url 'fittrack:exercises' %}">
-                            {% csrf_token %}
-                            {{ add_exercise.as_p }}
-                        <button class="btn btn-primary" type="submit" name="submit">Add Exercise</button>
-                    </form>
-                    </p>
-                    
-                </div>
-            </div>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h2> Edit Exercise</h2>
-                    <p class="card-text">
-                    <form role="form" id="edit-exercise-form" method="post" action="{% url 'fittrack:exercises' %}">
-                    {% csrf_token %}
-                    <input type="hidden" id="edit-id" name="exercise_id" value="" />
-                    {{ edit_exercise.as_p }}
-
-                    <div class="mt-2">
-                        <button class="btn btn-primary" type="submit" name="update">Update Exercise</button>
-
-                        <!-- Delete button submits the form with name="delete" included in POST -->
-                        <button id="delete-exercise-btn" class="btn btn-danger" type="submit" name="delete" value="1">
-                            Delete Exercise
-                        </button>
-
-                        <button type="button" id="clear-edit-btn" class="btn btn-secondary">Clear</button>
-                    </div>
-                    </form>
-                    </p>
-                </div>
-                </div>
         </div>
     </div>    
 </div>

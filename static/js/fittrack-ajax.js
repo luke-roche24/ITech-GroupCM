@@ -103,7 +103,11 @@
 
     // visual cue
     $exercisesListing.find('.list-group-item').removeClass('active');
-    $(this).addClass('active');
+    const $item = $(this);
+
+    $item.addClass('flash');
+    setTimeout(() => $item.removeClass('flash'), 320);
+
     $('#edit-name').focus();
   });
 
@@ -126,8 +130,8 @@
 
     // Blink picked item
     const $src = $(this);
-    $src.addClass('active');
-    setTimeout(() => $src.removeClass('active'), 100);
+    $src.addClass('flash');
+    setTimeout(() => $src.removeClass('flash'), 300);
 
     const $li = buildPickedExerciseRow({ id, name });
     $picked.append($li);
@@ -179,7 +183,7 @@
     const query = $(this).val();
   
     sendSuggest(query, '/fittrack/exercise_suggest/', '#exercises-listing');
-    sendSuggest(query, '/fittrack/workout_suggest/', '#w-exercises-listing');
+    sendSuggest(query, '/fittrack/exercise_suggest/', '#w-exercises-listing');
   }, 200));
 
   $('#workout-search-input').on('keyup', debounce(function () {
@@ -324,7 +328,40 @@
     });
   });
 
-  
+
+  $('.add-set-btn').click(function() {
+      var exerciseId = $(this).data('exercise');
+      var table = $('#table-' + exerciseId + ' tbody');
+      var totalFormsInput = $('#id_exercise_' + exerciseId + '-TOTAL_FORMS'); // management form input
+      var totalForms = parseInt(totalFormsInput.val());
+
+      // Clone empty row from last row
+      var lastRow = table.find('tr:last');
+      var newRow = lastRow.clone();
+
+      // Clear input values
+      newRow.find('input').each(function() {
+          var name = $(this).attr('name');
+          var newName = name.replace('-' + (totalForms - 1) + '-', '-' + totalForms + '-');
+          $(this).attr('name', newName);
+          $(this).attr('id', 'id_' + newName);
+          $(this).val('');
+          if ($(this).attr('type') === 'checkbox') {
+              $(this).prop('checked', false);
+          }
+      });
+
+      // Update set number
+      newRow.find('td:first').text(totalForms + 1);
+
+      // Append new row
+      table.append(newRow);
+
+      // Increment TOTAL_FORMS
+      totalFormsInput.val(totalForms + 1);
+  });
+
+    
   $(function () {
     console.log('Fittrack UI loaded');
   });

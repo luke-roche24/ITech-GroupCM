@@ -1,0 +1,31 @@
+<div class="card mb-4 new-exercise-card" data-exercise-id="{{ exercise.id }}">
+    <div class="card-header">
+        <h4>{{ exercise.name }} ({{ exercise.sets }} set{{ exercise.sets|pluralize }})</h4>
+    </div>
+    <div class="card-body">
+        {{ formset.management_form }}
+        <table class="table table-bordered mb-0">
+            <thead class="thead-light">
+                <tr>
+                    <th>Set #</th>
+                    <th>Reps</th>
+                    <th>Weight</th>
+                    <th>Failure</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in formset %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ form.reps }}</td>
+                        <td>{{ form.weight }}</td>
+                        <td>{{ form.failure }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-sm btn-outline-primary add-set-btn" data-exercise="{{ exercise.id }}">
+            + Add Set
+        </button>
+    </div>
+</div>

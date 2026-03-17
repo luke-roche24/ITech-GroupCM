@@ -1,0 +1,155 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+
+{% block title %}FitTrack — Track. Build. Progress.{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'CSS/landing.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block auth_content %}
+<div class="loader" id="loader">
+    <div class="loader-logo">FITTRACK</div>
+    <div class="loader-bar"></div>
+</div>
+
+<nav class="landing-nav">
+    <a href="{% url 'fittrack:index' %}" class="landing-logo">FITTRACK</a>
+    <div class="landing-nav-links">
+        <a href="{% url 'fittrack:login' %}" class="nav-btn nav-btn-ghost">Login</a>
+        <a href="{% url 'fittrack:register' %}" class="nav-btn nav-btn-accent">Get Started</a>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="landing-alert">
+    {% for message in messages %}
+    <div class="alert alert-dismissible fade show" role="alert" style="position:relative;">
+        {{ message }}
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close" style="font-size:0.55rem; position:absolute; right:0.8rem; top:50%; transform:translateY(-50%);"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<section class="hero" id="top">
+    <div class="hero-left">
+        <div class="geo-corner geo-tl"></div>
+        <div class="geo-corner geo-br"></div>
+        <div class="hero-tag fade-up fade-up-d1"><span class="dot"></span> Free Workout Tracker</div>
+        <h1 class="hero-heading fade-up fade-up-d2">TRACK YOUR<br><span class="accent">PROGRESS.</span><br><span class="outline">BUILD YOUR</span><br>ROUTINE.</h1>
+        <p class="hero-sub fade-up fade-up-d3">Create custom exercises, build your own workouts, log every session and watch your progress over time.</p>
+        <div class="hero-cta fade-up fade-up-d4">
+            <a href="{% url 'fittrack:register' %}" class="cta-primary">START TRACKING <i class="bi bi-arrow-right"></i></a>
+            <a href="{% url 'fittrack:login' %}" class="cta-secondary">LOGIN <i class="bi bi-person"></i></a>
+        </div>
+        <div class="hero-features fade-up fade-up-d5">
+            <span class="feat-pill"><i class="bi bi-lightning-charge-fill"></i> Custom Exercises</span>
+            <span class="feat-pill"><i class="bi bi-graph-up-arrow"></i> Progress</span>
+            <span class="feat-pill"><i class="bi bi-people-fill"></i> Friends</span>
+            <span class="feat-pill"><i class="bi bi-clipboard2-check"></i> Plans</span>
+        </div>
+    </div>
+    <div class="hero-right">
+        <img src="https://images.unsplash.com/photo-1554284126-aa88f22d8b74" alt="" aria-hidden="true" loading="eager">
+        <div class="hero-diagonal"></div>
+        <div class="hero-slash"></div>
+        <div class="hero-right-top"></div>
+    </div>
+    <div class="geo-lines"></div>
+</section>
+
+<section class="how-section">
+    <div class="how-bg"><div class="how-bg-grid"></div></div>
+    <div class="how-inner">
+        <div class="how-label">How It Works</div>
+        <div class="how-title">THREE SIMPLE STEPS</div>
+        <div class="how-subtitle">Get started in minutes. No complicated setup, no learning curve.</div>
+        <div class="how-steps">
+            <div class="step-connector step-connector-1"></div>
+            <div class="step-connector step-connector-2"></div>
+            <div class="step-card" data-delay="0">
+                <div class="step-num">01</div>
+                <div class="step-icon"><i class="bi bi-plus-circle"></i></div>
+                <div class="step-title">Create</div>
+                <div class="step-desc">Add your exercises, build custom workouts, and set up your weekly training plan.</div>
+            </div>
+            <div class="step-arrow"><i class="bi bi-chevron-down"></i></div>
+            <div class="step-card" data-delay="150">
+                <div class="step-num">02</div>
+                <div class="step-icon"><i class="bi bi-pencil-square"></i></div>
+                <div class="step-title">Track</div>
+                <div class="step-desc">Log every session with sets, reps, and weight. Previous efforts auto-fill to speed things up.</div>
+            </div>
+            <div class="step-arrow"><i class="bi bi-chevron-down"></i></div>
+            <div class="step-card" data-delay="300">
+                <div class="step-num">03</div>
+                <div class="step-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                <div class="step-title">Progress</div>
+                <div class="step-desc">View trends, hit personal bests, and see how far you've come with visual charts.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="landing-footer">
+    <div class="footer-inner">
+        <div class="footer-left">
+            <span class="footer-brand">FITTRACK</span>
+            <span class="footer-copy">&copy; 2026 University of Glasgow — Internet Technology (CM)</span>
+        </div>
+        <div class="footer-right">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">About Us</a>
+        </div>
+    </div>
+</footer>
+
+<a href="#top" class="back-top" id="backTop" aria-label="Back to top">
+    <i class="bi bi-chevron-up"></i>
+</a>
+
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">PRIVACY POLICY</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Data Collection</h6>
+                <p>FitTrack collects only the information you provide: username, email (optional), and workout data.</p>
+                <h6>Data Storage</h6>
+                <p>Your password is encrypted using Django's built-in hashing. Your data is stored securely and only accessible to you.</p>
+                <h6>Data Sharing</h6>
+                <p>We do not sell or share your personal data. Friends can only see your workouts if you add them.</p>
+                <h6>Your Rights</h6>
+                <p>You can delete your account and all associated data at any time.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="aboutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ABOUT FITTRACK</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>FitTrack is a web application developed as part of the Internet Technology (M) course at the University of Glasgow, 2026.</p>
+                <h6>Our Team</h6>
+                <p>Luke Roche, Yanyu Ge, Nacyha Fehida Mumthas Nazarudeen</p>
+                <h6>Our Mission</h6>
+                <p>Most workout trackers are inflexible. FitTrack lets you create custom exercises, build your own workouts.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'JavaScript/landing.js' %}"></script>
+{% endblock %}

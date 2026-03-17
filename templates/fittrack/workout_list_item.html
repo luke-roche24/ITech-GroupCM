@@ -4,7 +4,7 @@
     data-name="{{ workout.name }}">
 
     <div class="flex-grow-1">
-        <a href="{% url 'fittrack:workouts' %}">{{ workout.name }}</a>
+        {{ workout.name }}
     </div>
 
     <button type="button"

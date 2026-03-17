@@ -5,6 +5,10 @@ app_name = 'fittrack'
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
+    path('register/', views.user_register, name='register'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
     #path('about/', views.about, name='about'),
     #path('add_category/', views.add_category, name='add_category'),
     #path('category/<slug:category_name_slug>/add_page/',
@@ -23,5 +27,9 @@ urlpatterns = [
     #path('goto/', views.gotoview, name='goto'),
     path('exercise_suggest/', views.ExerciseSuggestionView.as_view(), name='e_suggest'),
     path('workout_suggest/', views.WorkoutSuggestionView.as_view(), name='w_suggest'),
-    
+    path('log_workout/', views.LogWorkoutView.as_view(), name='log_workout'),
+    path('log_workout/<int:workout_id>/', views.LogWorkoutSetsView.as_view(), name='log_workout_detail'),
+    path('recent-workouts/', views.RecentWorkoutsView.as_view(), name='recent_workouts'),
+    path('get-exercise-formset/', views.get_exercise_formset, name='get_exercise_formset'),
+    path('profile/', views.profile, name='profile'),
 ]

@@ -29,5 +29,5 @@ urlpatterns = [
     # 3 - The above maps any URLs starting with rango/ to be handled by rango.
     path('admin/', admin.site.urls),
     #path('accounts/register/', MyRegistrationView.as_view(), name='registration_register'),
-    path('accounts/', include('registration.backends.simple.urls')),
+    #path('accounts/', include('registration.backends.simple.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

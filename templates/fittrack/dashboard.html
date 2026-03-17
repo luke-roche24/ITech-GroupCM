@@ -1,0 +1,64 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+
+{% block title %}FitTrack - Dashboard{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h1>Hi, {{ username }}</h1>
+</div>
+
+<div class="row g-4">
+    <!-- Current Workout Schedule Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">
+                    <i class="bi bi-clipboard-data me-2"></i>Current Workout Schedule
+                </h5>
+                <p class="text-muted">Your plan for this week will appear here.</p>
+                <a href="{% url 'fittrack:current' %}" class="btn btn-outline-dark btn-sm">View Plan</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exercise Trends Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">
+                    <i class="bi bi-graph-up me-2"></i>Exercise Trends
+                </h5>
+                <p class="text-muted">Track your progress over time.</p>
+                <a href="{% url 'fittrack:progress' %}" class="btn btn-outline-dark btn-sm">View Progress</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Session Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">
+                    <i class="bi bi-pencil-square me-2"></i>Log Session
+                </h5>
+                <p class="text-muted">Record today's workout.</p>
+                <a href="{% url 'fittrack:log_workout' %}" class="btn btn-outline-dark btn-sm">Start Logging</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Friends Workouts Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">
+                    <i class="bi bi-people me-2"></i>Recent Friends Workouts
+                </h5>
+                <p class="text-muted">See what your friends are training.</p>
+                <a href="{% url 'fittrack:friends' %}" class="btn btn-outline-dark btn-sm">View Friends</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
