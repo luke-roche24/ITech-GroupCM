@@ -1,76 +1,168 @@
 {% extends 'fittrack/base.html' %}
 {% load static %}
-
 {% block title %}FitTrack - Profile{% endblock %}
-
 {% block content %}
 <div class="top-bar">
     <h1>Your Profile</h1>
 </div>
-
 <div class="row g-4">
-    <!-- Profile Picture -->
+    <!-- Left: Photo -->
     <div class="col-md-4">
         <div class="card shadow-sm">
             <div class="card-body text-center">
                 {% if user_profile.profile_picture %}
-                <img src="{{ user_profile.profile_picture.url }}" alt="Profile Picture"
-                     class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                <img src="{{ user_profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mb-3"
+                    style="width: 150px; height: 150px; object-fit: cover;">
                 {% else %}
                 <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3"
-                     style="width: 150px; height: 150px;">
+                    style="width: 150px; height: 150px;">
                     <i class="bi bi-person-fill text-white" style="font-size: 4rem;"></i>
                 </div>
                 {% endif %}
-
                 <h5 class="fw-bold">{{ request.user.username }}</h5>
                 {% if request.user.email %}
                 <p class="text-muted">{{ request.user.email }}</p>
                 {% endif %}
             </div>
         </div>
-
-        <!-- Upload Photo -->
         <div class="card shadow-sm mt-3">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">Update Profile Picture</h6>
                 <form method="POST" enctype="multipart/form-data" action="{% url 'fittrack:profile' %}">
                     {% csrf_token %}
                     {{ form.profile_picture }}
-                    <button type="submit" class="btn btn-dark btn-sm mt-2 w-100">Upload</button>
+                    <button type="submit" name="upload_photo" class="btn btn-dark btn-sm mt-2 w-100">Upload</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- User Information -->
+    <!-- User Info -->
     <div class="col-md-8">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm mb-3">
             <div class="card-body">
-                <h5 class="card-title fw-bold mb-4">User Information</h5>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="card-title fw-bold mb-0">User Information</h5>
+                    <button class="btn btn-outline-secondary btn-sm" id="edit-toggle"
+                        onclick="toggleEdit()">Edit</button>
+                </div>
 
-                <div class="mb-3 row">
-                    <label class="col-sm-3 col-form-label fw-semibold">Username</label>
-                    <div class="col-sm-9">
-                        <p class="form-control-plaintext">{{ request.user.username }}</p>
+                <!-- display mode -->
+                <div id="info-display">
+                    <div class="mb-3 row">
+                        <label class="col-sm-3 col-form-label fw-semibold">Username</label>
+                        <div class="col-sm-9">
+                            <p class="form-control-plaintext">{{ request.user.username }}</p>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-3 col-form-label fw-semibold">Email</label>
+                        <div class="col-sm-9">
+                            <p class="form-control-plaintext">{{ request.user.email|default:"Not set" }}</p>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-3 col-form-label fw-semibold">Date Joined</label>
+                        <div class="col-sm-9">
+                            <p class="form-control-plaintext">{{ request.user.date_joined|date:"d M Y" }}</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mb-3 row">
-                    <label class="col-sm-3 col-form-label fw-semibold">Email</label>
-                    <div class="col-sm-9">
-                        <p class="form-control-plaintext">{{ request.user.email|default:"Not set" }}</p>
-                    </div>
-                </div>
-
-                <div class="mb-3 row">
-                    <label class="col-sm-3 col-form-label fw-semibold">Date Joined</label>
-                    <div class="col-sm-9">
-                        <p class="form-control-plaintext">{{ request.user.date_joined|date:"d M Y" }}</p>
-                    </div>
+                <!-- edit mode (hidden by default) -->
+                <div id="info-edit" style="display: none;">
+                    <form method="POST" action="{% url 'fittrack:profile' %}">
+                        {% csrf_token %}
+                        {% for field in info_form %}
+                        <div class="mb-3 row">
+                            <label class="col-sm-3 col-form-label fw-semibold">{{ field.label }}</label>
+                            <div class="col-sm-9">
+                                {{ field }}
+                                {% for error in field.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="mb-3 row">
+                            <label class="col-sm-3 col-form-label fw-semibold">Date Joined</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-plaintext">{{ request.user.date_joined|date:"d M Y" }}</p>
+                            </div>
+                        </div>
+                        {% if info_form.non_field_errors %}
+                        <div class="text-danger small mb-2">{{ info_form.non_field_errors }}</div>
+                        {% endif %}
+                        <button type="submit" name="update_info" class="btn btn-dark btn-sm">Save</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                            onclick="toggleEdit()">Cancel</button>
+                    </form>
                 </div>
             </div>
         </div>
+
+        <!-- Change Password -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">Change Password</h5>
+                <form method="POST" action="{% url 'fittrack:profile' %}">
+                    {% csrf_token %}
+                    {% for field in password_form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                        <div class="input-group">
+                            {{ field }}
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword(this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {% for error in field.errors %}
+                        <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    {% if password_form.non_field_errors %}
+                    <div class="text-danger small mb-2">{{ password_form.non_field_errors }}</div>
+                    {% endif %}
+                    <button type="submit" name="change_password" class="btn btn-dark btn-sm">Change Password</button>
+                </form>
+            </div>
+        </div>
     </div>
+
 </div>
+</div>
+<script>
+    function toggleEdit() {
+        var display = document.getElementById('info-display');
+        var edit = document.getElementById('info-edit');
+        var btn = document.getElementById('edit-toggle');
+        if (edit.style.display === 'none') {
+            edit.style.display = 'block';
+            display.style.display = 'none';
+            btn.style.display = 'none';
+        } else {
+            edit.style.display = 'none';
+            display.style.display = 'block';
+            btn.style.display = 'inline-block';
+        }
+    }
+    function togglePassword(btn) {
+        var input = btn.parentElement.querySelector('input');
+        var icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
+    // auto open edit mode if there are form errors
+    {% if info_form.errors %}
+    toggleEdit();
+    {% endif %}
+</script>
 {% endblock %}
