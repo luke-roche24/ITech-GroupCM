@@ -1,0 +1,17 @@
+
+<li class="list-group-item d-flex align-items-center"
+    data-id="{{ workout.id }}"
+    data-name="{{ workout.name }}">
+
+    <div class="flex-grow-1">
+        {{ workout.name }}
+    </div>
+
+    <button type="button"
+            class="btn btn-sm btn-outline-danger delete-workout ms-2"
+            data-id="{{ workout.id }}"
+            aria-label="Delete {{ workout.name|escape }}">
+        Delete
+    </button>
+
+</li>

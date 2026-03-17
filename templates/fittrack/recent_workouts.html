@@ -1,0 +1,43 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Recent Workouts
+{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h1>Recent Workouts</h1>
+</div>
+
+<div class="container mt-4">
+    {% if sessions %}
+        <div class="list-group">
+            {% for session in sessions %}
+                <div class="list-group-item list-group-item-action flex-column align-items-start mb-3">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ session.workout.name }}</h5>
+                        <small>{{ session.date|date:"F j, Y, g:i a" }}</small>
+                    </div>
+                    <p class="mb-1">
+                        {% regroup session.prefetched_sets by exerciseid as exercise_list %}
+                        <ul>
+                            {% for exercise in exercise_list %}
+                                <li>
+                                    {{ exercise.grouper.name }}:
+                                    {{ exercise.list|length }} set{{ exercise.list|pluralize }}
+                                    ({% for set in exercise.list %}{{ set.reps }} reps @ {{ set.weight }}kg{% if not forloop.last %}, {% endif %}{% endfor %})
+                                </li>
+                            {% empty %}
+                                <li>No sets logged for this session.</li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">You haven't logged any workouts yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

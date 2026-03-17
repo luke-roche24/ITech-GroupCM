@@ -1,7 +1,76 @@
 from django import forms
 from django.contrib.auth.models import User
+from fittrack.models import Exercise, Workout, SetLog, UserProfile
 from django.contrib.auth.password_validation import validate_password
 from fittrack.models import UserProfile, SECURITY_QUESTIONS
+
+# We could add these forms to views.py, but it makes sense to split them off into their own file.
+
+class ExerciseForm(forms.ModelForm):
+
+    class Meta:
+        model = Exercise
+        fields = ('name', 'body_part')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'body_part': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class EditExerciseForm(forms.ModelForm):
+
+    class Meta:
+        model = Exercise
+        fields = ('name', 'body_part')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'id': 'edit-name', 'name': 'name'}),
+            'body_part': forms.TextInput(attrs={'class': 'form-control', 'id': 'edit-body-part', 'name': 'body_part'})
+        }
+
+class WorkoutForm(forms.ModelForm):
+    class Meta:
+        model = Workout
+        fields = ('name',)
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'id': 'workout-name', 'placeholder': 'Workout Name', 'maxlength': 35}),
+        }
+
+
+class ChooseWorkoutForm(forms.Form):
+    workout = forms.ModelChoiceField(
+        queryset=Workout.objects.none(),
+        widget=forms.Select(attrs={'class': 'custom-select'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user:
+            self.fields['workout'].queryset = Workout.objects.filter(owner=user)
+
+class SetLogForm(forms.ModelForm):
+    reps = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 1})
+    )
+    weight = forms.DecimalField(
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': 0.5})
+    )
+    to_failure = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+
+    class Meta:
+        model = SetLog
+        fields = ('reps', 'weight', 'failure')
+
+def get_set_formset(exercise, zero=False):
+    if zero:
+        extra = 0
+    else:
+        extra = exercise.sets
+
+    return forms.formset_factory(SetLogForm, extra=extra, can_delete=False)
 
 
 class UserRegistrationForm(forms.ModelForm):

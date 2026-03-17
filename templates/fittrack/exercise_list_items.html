@@ -1,0 +1,8 @@
+
+{% for exercise in exercises %}
+<li class="list-group-item" data-id="{{ exercise.id }}" data-name="{{ exercise.name }}" data-bodypart="{{ exercise.body_part }}">
+  {{ exercise.name }}
+</li>
+{% empty %}
+<li class="list-group-item"><em>No exercises found.</em></li>
+{% endfor %}
