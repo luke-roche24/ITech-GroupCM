@@ -1,94 +1,73 @@
-<!-- File: exercises.html 
-This html represents the exercises page 
--->
+{% extends 'fittrack/base.html' %}
 {% load static %}
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FitTrack — Your Exercises</title>
-  <link rel="stylesheet" href="{% static 'CSS/styles.css' %}" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">FITTRACK</div>
-      <nav>
-        <div><strong>Main</strong></div>
-        <a href="/fittrack/dashboard/" class="nav-link">Dashboard</a>
-        <a href="/fittrack/exercises/" class="nav-link">Your Exercises</a>
-        <a href="/fittrack/workouts/" class="nav-link">Your Workouts</a>
-        <a href="/fittrack/current/" class="nav-link">Current Plan</a>
-        <div style="margin-top:12px"><strong>Progress</strong></div>
-        <a href="/fittrack/progress/" class="nav-link">Trends</a>
-        <a href="#">Personal Bests</a>
-        <div style="margin-top:12px"><strong>Friends</strong></div>
-        <a href="/fittrack/friends/" class="nav-link">Friends List</a>
-        <div style="margin-top:12px"><strong>Account</strong></div>
-        <a href="#">Profile</a>
-        <a href="#">Settings</a>
-        <a href="#">Logout</a>
-      </nav>
-    </aside>
+{% block title %}FitTrack - Your Exercises{% endblock %}
 
-    <div class="main-area">
-      <header class="topbar">
-        <h1>Your Exercises</h1>
-        <div class="username">&nbsp;</div>
-      </header>
+{% block content %}
+<div class="top-bar">
+    <h1><i class="bi bi-lightning-charge-fill me-2"></i>Your Exercises</h1>
+</div>
 
-      <main class="content">
-        <div class="exercises-grid">
-          <div class="ex-list">
-            <div class="search">Search bar</div>
-            <div class="group">Legs</div>
-            {% if exercises %}
-              <ul class="items">
-              {% for exercise in exercises %}  
-                <li>{{ exercise.name }}</li>
-              {% endfor %}
-              </ul>
-            {% else %}
-              <strong>There are no exercises stored.</strong>
-            {% endif %}
-
-            <div class="group">Arms</div>
-            <ul class="items">
-              <li>Cable Curls</li>
-              <li>Tricep Pulldowns</li>
-            </ul>
-            <div class="group">Chest</div>
-            <ul class="items">
-              <li class="selected">Barbell Bench Press</li>
-              <li>Cable Flyes</li>
-              <li>Press-Ups</li>
-            </ul>
-          </div>
-
-          <div class="forms">
-            <div class="card form-card">
-              <h2>Add Exercise</h2>
-              <label>Name:</label><input type="text" placeholder="Text Box" />
-              <label>B.Part:</label><input type="text" placeholder="Text Box" />
-              <label>Increment:</label>
-              <div class="increment"><input type="number" value="5" /> <div class="spin">▲<br/>▼</div></div>
-              <button class="btn save">Save</button>
+<div class="row g-4">
+    <!-- Exercise List -->
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">Exercise Library</h5>
+                <input type="text" class="form-control mb-3" id="exerciseSearch" placeholder="Search exercises...">
+                {% if exercises %}
+                <ul class="list-group list-group-flush" id="exerciseList">
+                    {% for exercise in exercises %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center exercise-item">
+                        <div>
+                            <strong>{{ exercise.name }}</strong>
+                            <small class="text-muted ms-2">{{ exercise.body_part }}</small>
+                        </div>
+                        <button class="btn btn-outline-dark btn-sm edit-btn" data-id="{{ exercise.id }}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No exercises yet. Add your first one!</p>
+                {% endif %}
             </div>
-
-            <div class="card form-card">
-              <h2>Edit - Barbell Bench Press</h2>
-              <label>Name:</label><input type="text" placeholder="Text Box" />
-              <label>B.Part:</label><input type="text" placeholder="Text Box" />
-              <label>Increment:</label>
-              <div class="increment"><input type="number" value="5" /> <div class="spin">▲<br/>▼</div></div>
-              <button class="btn update">Update</button>
-            </div>
-          </div>
         </div>
-      </main>
     </div>
-  </div>
-</body>
-</html>
+
+    <!-- Add / Edit Exercise -->
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">Add Exercise</h5>
+                <form method="POST" action="{% url 'fittrack:exercises' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="e.g. Barbell Bench Press" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Body Part</label>
+                        <input type="text" class="form-control" name="body_part" placeholder="e.g. Chest" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100">
+                        <i class="bi bi-plus-lg me-1"></i>Save Exercise
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('exerciseSearch').addEventListener('input', function() {
+    const filter = this.value.toLowerCase();
+    document.querySelectorAll('.exercise-item').forEach(function(item) {
+        item.style.display = item.textContent.toLowerCase().includes(filter) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}
