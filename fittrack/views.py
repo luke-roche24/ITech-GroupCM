@@ -24,7 +24,7 @@ from .forms import (
     ExerciseForm, EditExerciseForm, WorkoutForm, ChooseWorkoutForm,
     SetLogForm, get_set_formset,
     UserRegistrationForm, UserProfileForm,
-    ForgotPasswordForm, SecurityAnswerForm, ResetPasswordForm,
+    ForgotPasswordForm, SecurityAnswerForm, ResetPasswordForm, AddToPlanForm
 )
 
 
@@ -422,6 +422,7 @@ def user_register(request):
             user = form.save()
             login(request, user)
             messages.success(request, f'Welcome to FitTrack, {user.username}!')
+            m.Plan.objects.create(user=user)
             return redirect('fittrack:dashboard')
     else:
         form = UserRegistrationForm()
@@ -550,3 +551,48 @@ def profile(request):
         form = UserProfileForm(instance=user_profile)
     context = {'user_profile': user_profile, 'form': form}
     return render(request, 'fittrack/profile.html', context)
+
+
+class CurrentPlanView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        planned_workouts = m.PlannedWorkout.objects.filter(user=request.user).order_by('day')
+        days = m.PlannedWorkout.DAYS_OF_WEEK
+        form = AddToPlanForm(user=request.user)
+        
+        schedule_by_day = []
+        for day_num, day in days:
+            workouts_for_day = planned_workouts.filter(day=day_num)
+            schedule_by_day.append({
+                'day_let': day,
+                'day_num': day_num,
+                'workouts': workouts_for_day
+            })
+
+        context_dict = {
+            'schedule_by_day': schedule_by_day,
+            'form':form
+        }
+
+        return render(request, 'fittrack/current.html', context=context_dict)
+    
+    def post(self, request):
+        day_num = request.POST.get('day_num')
+        form = AddToPlanForm(request.POST, user=request.user)
+        
+        if form.is_valid():
+            workout = form.cleaned_data['workout']
+            m.PlannedWorkout.objects.create(
+                user=request.user,
+                workout=workout,
+                day=day_num
+            )
+            return redirect(reverse('fittrack:current'))
+
+        return redirect(reverse('fittrack:current'))
+
+
+        
+    
+
+
