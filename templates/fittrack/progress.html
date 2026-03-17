@@ -1,0 +1,42 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+
+{% block title %}FitTrack - Progress{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h1><i class="bi bi-graph-up-arrow me-2"></i>Progress</h1>
+</div>
+
+<div class="row g-4">
+    <!-- Stats Bar -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body d-flex flex-wrap align-items-center gap-3">
+                <select class="form-select" style="max-width: 250px;" aria-label="Select exercise">
+                    <option selected>Select Exercise</option>
+                    <option>Bench Press</option>
+                    <option>Squat</option>
+                    <option>Deadlift</option>
+                </select>
+                <span class="badge bg-dark">Last Trained: --</span>
+                <span class="badge bg-dark">Personal Best: --</span>
+                <span class="badge bg-dark">PB Date: --</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body text-center" style="min-height: 350px; display: flex; align-items: center; justify-content: center;">
+                <div>
+                    <h3 class="fw-bold text-muted">Exercise Trends</h3>
+                    <p class="text-muted">e.g. Weight vs Time</p>
+                    <p class="text-muted"><small>Select an exercise above to view your trend chart.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

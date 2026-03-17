@@ -37,7 +37,7 @@
             <div class="nav-label">Tracking</div>
             <a href="{% url 'fittrack:progress' %}" class="nav-link {% if request.resolver_match.url_name == 'progress' %}active{% endif %}">
                 <i class="bi bi-graph-up-arrow"></i> Progress</a>
-            <a href="{% url 'fittrack:recent_workouts' %}" class="nav-link {% if request.resolver_match.url_name == 'progress' %}active{% endif %}">
+            <a href="{% url 'fittrack:recent_workouts' %}" class="nav-link {% if request.resolver_match.url_name == 'recent_workouts' %}active{% endif %}">
                 <i class="bi bi-clock-history"></i> Recent Workouts</a>
 
 

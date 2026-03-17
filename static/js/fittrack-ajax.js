@@ -27,7 +27,7 @@
     }
   });
 
-  // Debounce utility
+  // Debounce
   const debounce = (fn, wait = 200) => {
     let timer = null;
     return function (...args) {
@@ -76,7 +76,7 @@
     $target.text(text);
   }
 
-  // ---- Cached selectors --------------------------------------------------
+  // ---- Selectors --------------------------------------------------
   const $exercisesListing = $('#exercises-listing');
   const $wExercisesListing = $('#w-exercises-listing');
   const $pickedContainerSelector = '#picked-exercises';
@@ -85,7 +85,7 @@
   const $createWorkoutBtn = $('#create-workout-btn');
   const $createWorkoutMsg = $('#create-workout-msg');
 
-  // ---- Selection / Edit handlers -----------------------------------------
+  // ---- Selection / Edit -----------------------------------------
   $exercisesListing.on('click', 'li.list-group-item', function (e) {
     // ignore the search input row
     if ($(this).find('#search-input').length) return;
@@ -141,7 +141,7 @@
 
   // Remove the picked item
   $doc.on('click', '#picked-exercises .remove-picked', function (e) {
-    e.stopPropagation(); 
+    e.stopPropagation(); // avoid triggering parent clicks
     $(this).closest('li').remove();
   });
 
@@ -165,7 +165,7 @@
   });
 
 
-  // ---- Suggest (search) handlers (debounced) -----------------------------
+  // ---- Suggest -----------------------------
   // Suggest sender function
   function sendSuggest(query, url, targetSelector) {
     $.get(url, { suggestion: query })
@@ -251,7 +251,7 @@
       url: $createWorkoutForm.attr('action'),
       method: 'POST',
       data: data,
-      traditional: true, 
+      traditional: true,
       success(resp) {
         if (resp && resp.success) {
           showMessage($createWorkoutMsg, 'Workout created (id: ' + resp.workout_id + ').');
@@ -332,7 +332,7 @@
   $('.add-set-btn').click(function() {
       var exerciseId = $(this).data('exercise');
       var table = $('#table-' + exerciseId + ' tbody');
-      var totalFormsInput = $('#id_exercise_' + exerciseId + '-TOTAL_FORMS'); 
+      var totalFormsInput = $('#id_exercise_' + exerciseId + '-TOTAL_FORMS');
       var totalForms = parseInt(totalFormsInput.val());
 
       // Clone empty row from last row

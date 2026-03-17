@@ -1,4 +1,3 @@
-
 from datetime import datetime
 import re
 
@@ -19,6 +18,7 @@ from django.views.generic import ListView
 
 import fittrack.models as m
 from fittrack.models import Exercise, UserProfile, SECURITY_QUESTIONS
+from django.db.models import Q
 
 from .forms import (
     ExerciseForm, EditExerciseForm, WorkoutForm, ChooseWorkoutForm,
@@ -73,7 +73,7 @@ class ExerciseView(LoginRequiredMixin, View):
                 form.save()
                 return redirect(reverse('fittrack:exercises'))
             else:
-                
+
                 exercise_list = m.Exercise.objects.filter(owner=request.user).order_by('name')
                 context_dict = {
                     'exercises': exercise_list,
@@ -86,7 +86,6 @@ class ExerciseView(LoginRequiredMixin, View):
 
         if form.is_valid():
             exercise = form.save(commit=False)
-            
             exercise.owner = request.user
             exercise.save()
             return redirect(reverse('fittrack:exercises'))
@@ -116,7 +115,7 @@ class WorkoutView(LoginRequiredMixin, View):
             workout_id = request.POST.get('workout_id')
             workout = get_object_or_404(m.Workout, pk=workout_id, owner=request.user)
 
-            
+         
             workout.delete()
 
             if request.is_ajax() or request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -149,7 +148,7 @@ class WorkoutView(LoginRequiredMixin, View):
 
             with transaction.atomic():
                 workout = form.save(commit=False)
-                
+             
                 workout.owner = request.user
                 workout.save()
 
@@ -160,7 +159,8 @@ class WorkoutView(LoginRequiredMixin, View):
                     except m.Exercise.DoesNotExist:
                         transaction.set_rollback(True)
                         return JsonResponse({'success': False, 'error': f'Permission denied for exercise id {ex["exercise_id"]}'}, status=403)
-                   
+                  
+
                     we = m.WorkoutExercise.objects.create(
                         workout=workout,
                         exercise=exercise_obj,
@@ -178,7 +178,6 @@ class WorkoutView(LoginRequiredMixin, View):
             return redirect('fittrack:workouts')
 
 
-@login_required
 def workouts(request):
     context_dict = {}
     return render(request, 'fittrack/workouts.html', context=context_dict)
@@ -349,7 +348,53 @@ def get_exercise_formset(request):
 
 @login_required
 def friends(request):
-    return render(request, 'fittrack/friends.html')
+    current_user = request.user
+
+    search_results = None
+    if request.method == "POST":
+        if "search_user" in request.POST:
+            query = request.POST.get("search_user")
+            existing = m.Friendship.objects.filter(
+                Q(user_a=current_user) | Q(user_b=current_user)
+            ).values_list("user_a_id", "user_b_id")
+            exclude_ids = {current_user.id}
+            for a, b in existing:
+                exclude_ids.add(a)
+                exclude_ids.add(b)
+            search_results = User.objects.filter(
+                username__icontains=query
+            ).exclude(id__in=exclude_ids)
+
+        elif "add_friend" in request.POST:
+            target_user = User.objects.get(id=request.POST.get("friend_id"))
+            m.Friendship.objects.get_or_create(user_a=current_user, user_b=target_user, status=False)
+            return redirect("fittrack:friends")
+
+        elif "accept_friend" in request.POST:
+            friendship = m.Friendship.objects.get(id=request.POST.get("request_id"))
+            friendship.status = True
+            friendship.save()
+            return redirect("fittrack:friends")
+
+    pending_requests = m.Friendship.objects.filter(user_b=current_user, status=False)
+
+    friends_query = m.Friendship.objects.filter(
+        (Q(user_a=current_user) | Q(user_b=current_user)) & Q(status=True)
+    )
+    confirmed_friends = []
+    for f in friends_query:
+        friend_obj = f.user_b if f.user_a == current_user else f.user_a
+        recent = m.WorkoutSession.objects.filter(user=friend_obj).order_by("-date").first()
+        confirmed_friends.append({"user": friend_obj, "recent": recent})
+
+    context = {
+        "pending_requests": pending_requests,
+        "confirmed_friends": confirmed_friends,
+        "search_results": search_results,
+    }
+    return render(request, "fittrack/friends.html", context)
+#def friends(request):
+#    return render(request, 'fittrack/friends.html')
 
 
 @login_required

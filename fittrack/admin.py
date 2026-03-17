@@ -1,17 +1,11 @@
 from django.contrib import admin
-from fittrack.models import (
-    UserProfile, Exercise, Workout, WorkoutExercise,
-    Plan, PlanWorkout, WorkoutSession, SetLog,
-    IncrementSetting, Friendship,
-)
+import fittrack.models as m
+# Register your models here.
 
-admin.site.register(UserProfile)
-admin.site.register(Exercise)
-admin.site.register(Workout)
-admin.site.register(WorkoutExercise)
-admin.site.register(Plan)
-admin.site.register(PlanWorkout)
-admin.site.register(WorkoutSession)
-admin.site.register(SetLog)
-admin.site.register(IncrementSetting)
-admin.site.register(Friendship)
+admin.site.register(m.Exercise)
+admin.site.register(m.Friendship)
+admin.site.register(m.UserProfile)
+admin.site.register(m.Workout)
+admin.site.register(m.WorkoutSession)
+admin.site.register(m.SetLog)
+admin.site.register(m.WorkoutExercise)

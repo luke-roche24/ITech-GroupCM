@@ -42,14 +42,14 @@
                     <p class="card-text">
                         <form id="create-workout-form" class="form-control" method="post" action="{% url 'fittrack:workouts' %}">
                             {% csrf_token %}
-                            <!-- Django WorkoutForm rendered manually (only name needed) -->
+                            
                             <li class="list-group-item">
                                 <input type="text" name="name" id="workout-name" class="form-control" placeholder="Workout name (e.g. Push day)" maxlength="35">
                                 <br />
                                 <button id="create-workout-btn" class="btn btn-accent" type="button">Create Workout</button>
                             </li>
 
-                            <!-- picked exercises list (ul created elsewhere or by JS) -->
+                        
                             <ul id="picked-exercises" class="list-group mt-3">
                                 <li class="list-group-item list-group-item-secondary">Picked exercises:</li>
                             </ul>

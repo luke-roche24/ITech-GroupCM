@@ -1,5 +1,4 @@
 {% extends 'fittrack/base.html' %}
-{% extends 'fittrack/base.html' %}
 {% load static %}
 
 {% block title %}FitTrack - Dashboard{% endblock %}
@@ -44,7 +43,7 @@
                     <i class="bi bi-pencil-square me-2"></i>Log Session
                 </h5>
                 <p class="text-muted">Record today's workout.</p>
-                <a href="{% url 'fittrack:workouts' %}" class="btn btn-outline-dark btn-sm">Start Logging</a>
+                <a href="{% url 'fittrack:log_workout' %}" class="btn btn-outline-dark btn-sm">Start Logging</a>
             </div>
         </div>
     </div>
@@ -61,7 +60,5 @@
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
 </div>
 {% endblock %}

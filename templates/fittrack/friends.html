@@ -1,0 +1,120 @@
+{% extends 'fittrack/base.html' %}
+{% load static %}
+
+{% block title %}FitTrack - Friends{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h1><i class="bi bi-people-fill me-2"></i>Friends</h1>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Search + Requests + Friends List -->
+    <div class="col-md-4">
+        <!-- Search -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">Find Friends</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search_user" placeholder="Search username..." required>
+                        <button class="btn btn-dark" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        {% if search_results %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h6 class="fw-bold">Search Results</h6>
+                {% for found_user in search_results %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>{{ found_user.username }}</span>
+                    <form method="post" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="friend_id" value="{{ found_user.id }}">
+                        <button type="submit" name="add_friend" class="btn btn-outline-dark btn-sm">
+                            <i class="bi bi-person-plus-fill"></i> Add
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Pending Requests -->
+        {% if pending_requests %}
+        <div class="card shadow-sm mb-3 border-warning">
+            <div class="card-body">
+                <h6 class="fw-bold">Pending Requests</h6>
+                {% for req in pending_requests %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>{{ req.user_a.username }}</span>
+                    <form method="post" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="request_id" value="{{ req.id }}">
+                        <button type="submit" name="accept_friend" class="btn btn-dark btn-sm">
+                            <i class="bi bi-check-lg"></i> Accept
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Friends List -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">Your Friends</h5>
+                <ul class="list-group list-group-flush">
+                    {% for friend in confirmed_friends %}
+                    <li class="list-group-item">
+                        <i class="bi bi-person-fill me-2"></i>{{ friend.user.username }}
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">No friends added yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Friend Activity -->
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">Recent Friend Activity</h5>
+                {% if confirmed_friends %}
+                <div class="row g-3">
+                    {% for friend in confirmed_friends %}
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="fw-bold">{{ friend.user.username }}</h6>
+                                {% if friend.recent %}
+                                <p class="mb-1">Completed: {{ friend.recent.workout.name }}</p>
+                                <small class="text-muted">{{ friend.recent.date|date:"d M Y" }}</small>
+                                {% else %}
+                                <p class="text-muted mb-0">No recent workouts logged.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-2">Add friends to see their activity here.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

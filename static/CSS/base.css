@@ -482,7 +482,7 @@
         cursor: pointer;
         
 
-
+        
         transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
     }
 
@@ -491,19 +491,19 @@
     .list-group-item:hover {
         background: var(--bg-card-hover);
         border-color: var(--accent);
-        position: relative;  
+        position: relative;   
         z-index: 1;
     }
 
 
-
+    
     .list-group-item.active {
         background-color: rgba(var(--accent-rgb), 0.12);
         border-color: rgba(var(--accent-rgb), 0.25);
         color: #000;
     }
 
-
+    
     @keyframes ft-warmFlash {
         0%   { background-color: rgba(var(--accent-rgb), 0.28); }
         60%  { background-color: rgba(var(--accent-rgb), 0.14); }
