@@ -40,7 +40,7 @@
                 <div class="card-body">
                     <h2>Add Exercise</h2>
                     <p class="card-text">
-                    <form role="form" class="form-control-2" id="exercise_form" method="post" action="{% url 'fittrack:exercises' %}">
+                    <form role="form" id="exercise_form" method="post" action="{% url 'fittrack:exercises' %}">
                             {% csrf_token %}
                             {{ add_exercise.as_p }}
                         <button class="btn btn-accent" type="submit" name="submit">Add Exercise</button>
@@ -53,7 +53,7 @@
                 <div class="card-body">
                     <h2> Edit Exercise</h2>
                     <p class="card-text">
-                    <form role="form" class="form-control-2" id="edit-exercise-form" method="post" action="{% url 'fittrack:exercises' %}">
+                    <form role="form" id="edit-exercise-form" method="post" action="{% url 'fittrack:exercises' %}">
                     {% csrf_token %}
                     <input type="hidden" id="edit-id" name="exercise_id" value="" />
                     {{ edit_exercise.as_p }}

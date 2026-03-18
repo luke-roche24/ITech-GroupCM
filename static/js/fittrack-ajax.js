@@ -70,6 +70,22 @@ $(document).ready(function ($) {
     $li.append($name, $sets, $reps, $remove);
     return $li;
   }
+ // =================May not need ======================
+  function buildPlannedWorkoutCard({workoutName, exercises}) {
+    const $card = $('<div/>', {class: "card shadow-sm h-100 text-center"})
+    const $cardbody = $('<div/>', {class: "card-body d-flex align-items-center justify-content-center"})
+    const $head = $('<p/>', {class: "text-muted mb-0"}).text(workoutName)
+    const $exerciseList = S('<ul/>', {class: 'list-unstyled mt-2'});
+    $.each(exercises, function(index, exercise) {
+      const $li = $('<li/>').text(`${exercise.name} - ${exercise.sets}x${exercise.reps}`);
+      $exerciseList.append($li);
+    });
+    $cardbody.append($head, $exerciseList);
+    $card.append($cardbody);
+
+    return $card;
+  }
+//====================================================
 
   
   function showMessage($target, text) {

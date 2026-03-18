@@ -240,11 +240,13 @@
 
    .ft-card-2 {
 
-       background: var(--bg-card-light);
+       background: var(--accent);
 
        border: 1px solid var(--border-color);
 
        border-radius: 12px;
+
+       color:#000;
 
        padding: 1.5rem;
 
@@ -273,74 +275,60 @@
    /* Buttons */
 
    .btn-accent {
-       display: inline-block;
-       background: var(--accent);
-       color: #000;
-       border: none;
-       padding: 0.55rem 1.5rem;
-       border-radius: 8px;
-       font-weight: 500;
-       font-size: 0.9rem;
-       transition: all 0.15s ease;
-   }
+        display: inline-block;
+        background: var(--accent);
+        color: #000;
+        border: none;
+        padding: 0.55rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.15s ease;
+    }
 
 
-   .btn-accent:hover {
-       background: var(--accent-dim);
-       transform: translateY(-1px);
-   }
 
-   .btn-accent:focus {
-       outline: none;
-       box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.12);
-   }
-
-   .btn-accent-del {
-       display: inline-block;
-       background: var(--danger);
-       color: #000;
-       border: none;
-       padding: 0.55rem 1.5rem;
-       border-radius: 8px;
-       font-weight: 500;
-       font-size: 0.9rem;
-       transition: all 0.15s ease;
-   }
+    .btn-accent:hover { background: var(--accent-dim); transform: translateY(-1px); }
+    .btn-accent:focus { outline: none; box-shadow: 0 0 0 3px rgba(0,230,118,0.12); }
+   
+    .btn-accent-del {
+        display: inline-block;
+        background: var(--danger);
+        color: #000;
+        border: none;
+        padding: 0.55rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.15s ease;
+    }
 
 
-   .btn-accent-del:hover {
-       background: #ff1744;
-       transform: translateY(-1px);
-   }
+    .btn-accent-del:hover { background: #ff1744; transform: translateY(-1px); }
+    .btn-accent-del:focus { outline: none; box-shadow: 0 0 0 3px rgba(0,230,118,0.12); }
+    
+    .btn-neutral {
+        background: #fff;
+        color: #000;
+        border: 1px solid #000;
+        padding: 0.55rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
 
-   .btn-accent-del:focus {
-       outline: none;
-       box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.12);
-   }
+    .btn-neutral:hover {
+        background: #e6e6e6;
+        border-color: #000;
+        transform: translateY(-1px);
+    }
 
-   .btn-neutral {
-       background: #fff;
-       color: #000;
-       border: 1px solid #000;
-       padding: 0.55rem 1.5rem;
-       border-radius: 8px;
-       font-weight: 500;
-       font-size: 0.9rem;
-       transition: all 0.2s;
-   }
-
-   .btn-neutral:hover {
-       background: #e6e6e6;
-       border-color: #000;
-       transform: translateY(-1px);
-   }
-
-   .btn-neutral:focus {
-       outline: none;
-       box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
-   }
-
-   /*
+    .btn-neutral:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+    }
+    /*
     .btn-accent {
 
        background: var(--accent);
@@ -406,6 +394,47 @@
        border-color: var(--text-secondary);
        color: var(--text-primary);
    }
+
+    .workout-card {
+        background: var(--accent);
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        overflow: hidden;
+    }
+
+    a:hover .workout-card {
+        background: var(--accent-dim);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .workout-card .card-body {
+        padding: 0.75rem 1rem;
+    }
+
+    .workout-name {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .exercise-list {
+        margin-bottom: 0;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .exercise-item {
+        padding: 0.1rem 0;
+    }
+
+    a:focus .workout-card {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0,230,118,0.12);
+    }
 
 
 
