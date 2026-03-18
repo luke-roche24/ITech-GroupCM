@@ -423,7 +423,7 @@ def user_register(request):
             user = form.save()
             login(request, user)
             messages.success(request, f'Welcome to FitTrack, {user.username}!')
-            m.Plan.objects.create(user=user)
+            
             return redirect('fittrack:dashboard')
     else:
         form = UserRegistrationForm()
@@ -624,22 +624,29 @@ class CurrentPlanView(LoginRequiredMixin, View):
                 pass
             return redirect('fittrack:current')
 
-        form = ChooseWorkoutForm(request.POST, user=request.user)
+        
+        
+        day_num = request.POST.get('day_num')
 
+        if day_num:
+            form = AddToPlanForm(request.POST, user=request.user)
+            if form.is_valid():
+                workout = form.cleaned_data['workout']
+                m.PlannedWorkout.objects.create(
+                    user=request.user,
+                    workout=workout,
+                    day=day_num
+                )
+                return redirect(reverse('fittrack:current'))
+        
+        form = ChooseWorkoutForm(request.POST, user=request.user)
+        
         if form.is_valid():
             selected_workout = form.cleaned_data['workout']
             return redirect('fittrack:log_workout_detail', workout_id=selected_workout.id)
            
-        
-        day_num = request.POST.get('day_num')
-        form = AddToPlanForm(request.POST, user=request.user)
-        if form.is_valid():
-            workout = form.cleaned_data['workout']
-            m.PlannedWorkout.objects.create(
-                user=request.user,
-                workout=workout,
-                day=day_num
-            )
-            return redirect(reverse('fittrack:current'))
 
         return redirect(reverse('fittrack:current'))
+
+
+
