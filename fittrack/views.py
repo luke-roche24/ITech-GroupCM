@@ -24,7 +24,8 @@ from .forms import (
     ExerciseForm, EditExerciseForm, WorkoutForm, ChooseWorkoutForm,
     SetLogForm, get_set_formset,
     UserRegistrationForm, UserProfileForm,
-    ForgotPasswordForm, SecurityAnswerForm, ResetPasswordForm, AddToPlanForm
+ForgotPasswordForm, SecurityAnswerForm, ResetPasswordForm,
+    EditUserInfoForm, ChangePasswordForm, AddToPlanForm,
 )
 
 
@@ -541,15 +542,40 @@ def forgot_password(request):
 @login_required
 def profile(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    photo_form = UserProfileForm(instance=user_profile)
+    info_form = EditUserInfoForm(instance=request.user)
+    password_form = ChangePasswordForm(user=request.user)
+
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile updated successfully.')
-            return redirect('fittrack:profile')
-    else:
-        form = UserProfileForm(instance=user_profile)
-    context = {'user_profile': user_profile, 'form': form}
+        if 'upload_photo' in request.POST:
+            photo_form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+            if photo_form.is_valid():
+                photo_form.save()
+                messages.success(request, 'Profile picture updated.')
+                return redirect('fittrack:profile')
+
+        elif 'update_info' in request.POST:
+            info_form = EditUserInfoForm(request.POST, instance=request.user)
+            if info_form.is_valid():
+                info_form.save()
+                messages.success(request, 'Profile information updated.')
+                return redirect('fittrack:profile')
+
+        elif 'change_password' in request.POST:
+            password_form = ChangePasswordForm(request.POST, user=request.user)
+            if password_form.is_valid():
+                request.user.set_password(password_form.cleaned_data['new_password'])
+                request.user.save()
+                login(request, request.user)
+                messages.success(request, 'Password changed successfully.')
+                return redirect('fittrack:profile')
+
+    context = {
+        'user_profile': user_profile,
+        'form': photo_form,
+        'info_form': info_form,
+        'password_form': password_form,
+    }
     return render(request, 'fittrack/profile.html', context)
 
 
@@ -599,9 +625,3 @@ class CurrentPlanView(LoginRequiredMixin, View):
             return redirect(reverse('fittrack:current'))
 
         return redirect(reverse('fittrack:current'))
-
-
-        
-    
-
-

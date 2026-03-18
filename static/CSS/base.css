@@ -474,18 +474,42 @@
 
    }
 
-   .form-control:focus,
-   .form-select:focus {
-
-       background: rgba(255, 255, 255, 0.06);
-
-       border-color: var(--accent);
-
-       color: var(--text-primary);
-
-       box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
-
+   /* fix form colors inside white cards */
+   .card .form-control,
+   .card .form-select {
+       background: #fff;
+       color: #212529;
+       border-color: #dee2e6;
    }
+
+   .card .form-control:focus,
+   .card .form-select:focus {
+       background: #fff;
+       color: #212529;
+       border-color: var(--accent);
+       box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
+   }
+
+   .card .form-control::placeholder {
+       color: #999;
+   }
+
+   .card .form-label,
+   .card .col-form-label {
+       color: #212529;
+   }
+
+   .card .btn-outline-secondary {
+       color: #555;
+       border-color: #ccc;
+   }
+
+   .card .btn-outline-secondary:hover {
+       color: #212529;
+       background: #f0f0f0;
+       border-color: #aaa;
+   }
+
 
    .form-control::placeholder {
        color: var(--text-muted);
@@ -513,70 +537,89 @@
    /* Lists */
 
 
-    .list-group-item {
-        background: var(--bg-card);            
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        color: #fff;
-        margin-bottom: 0.5rem;
-        padding: 0.75rem 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        cursor: pointer;
-        
-
-        
-        transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
-    }
+   .list-group-item {
+       background: var(--bg-card);
+       border: 1px solid var(--border-color);
+       border-radius: 8px;
+       color: #fff;
+       margin-bottom: 0.5rem;
+       padding: 0.75rem 1rem;
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       cursor: pointer;
 
 
-    
-    .list-group-item:hover {
-        background: var(--bg-card-hover);
-        border-color: var(--accent);
-        position: relative;   
-        z-index: 1;
-    }
+
+       transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+   }
 
 
-    
-    .list-group-item.active {
-        background-color: rgba(var(--accent-rgb), 0.12);
-        border-color: rgba(var(--accent-rgb), 0.25);
-        color: #000;
-    }
+
+   <<<<<<< HEAD .list-group-item:hover {
+       background: var(--bg-card-hover);
+       border-color: var(--accent);
+       position: relative;
+       z-index: 1;
+   }
+
+   =======@keyframes ft-warmFlash {
+       0% {
+           background-color: rgba(var(--accent-rgb), 0.28);
+       }
+
+       60% {
+           background-color: rgba(var(--accent-rgb), 0.14);
+       }
+
+       100% {
+           background-color: rgba(var(--accent-rgb), 0.12);
+       }
+   }
+
+   >>>>>>>main .list-group-item.active {
+       background-color: rgba(var(--accent-rgb), 0.12);
+       border-color: rgba(var(--accent-rgb), 0.25);
+       color: #000;
+   }
 
 
-    
-    @keyframes ft-warmFlash {
-        0%   { background-color: rgba(var(--accent-rgb), 0.28); }
-        60%  { background-color: rgba(var(--accent-rgb), 0.14); }
-        100% { background-color: rgba(var(--accent-rgb), 0.12); }
-    }
+   @keyframes ft-warmFlash {
+       0% {
+           background-color: rgba(var(--accent-rgb), 0.28);
+       }
 
-    
-    .list-group-item.flash {
-        animation: ft-warmFlash 280ms ease forwards;
-    }
+       60% {
+           background-color: rgba(var(--accent-rgb), 0.14);
+       }
 
-    
-    .list-group-item input.form-control {
-        margin-bottom: 0.5rem;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid var(--border-color);
-        color: var(--text-primary);
-        padding: 0.5rem 0.75rem;
-        transition: all 0.2s;
-    }
+       100% {
+           background-color: rgba(var(--accent-rgb), 0.12);
+       }
+   }
 
-    .list-group-item input.form-control:focus {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
-        outline: none;
-    }
+
+   .list-group-item.flash {
+       animation: ft-warmFlash 280ms ease forwards;
+   }
+
+
+   .list-group-item input.form-control {
+       margin-bottom: 0.5rem;
+       border-radius: 8px;
+       background: rgba(255, 255, 255, 0.04);
+       border: 1px solid var(--border-color);
+       color: var(--text-primary);
+       padding: 0.5rem 0.75rem;
+       transition: all 0.2s;
+   }
+
+   .list-group-item input.form-control:focus {
+       background: rgba(255, 255, 255, 0.06);
+       border-color: var(--accent);
+       box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
+       outline: none;
+   }
 
 
 
@@ -602,15 +645,20 @@
    }
 
    @keyframes ft-flash {
-        from { background-color: rgba(var(--accent-rgb), 0.20); }
-        to   { background-color: transparent; }
-        }
+       from {
+           background-color: rgba(var(--accent-rgb), 0.20);
+       }
 
-        
-        .flash {
-        animation: ft-flash 0.28s ease;
-        color: #000;
-        }
+       to {
+           background-color: transparent;
+       }
+   }
+
+
+   .flash {
+       animation: ft-flash 0.28s ease;
+       color: #000;
+   }
 
    @media (max-width: 768px) {
 
@@ -647,4 +695,25 @@
    ::-webkit-scrollbar-thumb {
        background: #333;
        border-radius: 3px;
+   }
+
+   /* fix dark buttons inside dark list items */
+   .list-group-item .btn-outline-dark {
+       color: var(--text-secondary);
+       border-color: var(--text-secondary);
+   }
+
+   .list-group-item .btn-outline-dark:hover {
+       color: #fff;
+       background: rgba(255, 255, 255, 0.1);
+       border-color: var(--accent);
+   }
+
+   .list-group-item.text-muted {
+       color: var(--text-muted) !important;
+   }
+
+   *:focus-visible {
+       outline: 2px solid #58a6ff;
+       outline-offset: 2px;
    }
