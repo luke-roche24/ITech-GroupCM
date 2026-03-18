@@ -13,7 +13,7 @@ urlpatterns = [
     path('current/', views.CurrentPlanView.as_view(), name='current'),
     path('exercises/', views.ExerciseView.as_view(), name='exercises'),
     path('friends/', views.friends, name='friends'),
-    path('progress/', views.progress, name='progress'),
+    path('progress/', views.ProgressView.as_view(), name='progress'),
     path('workouts/', views.WorkoutView.as_view(), name='workouts'),
     path('search/', views.search, name='search'),
     path('exercise_suggest/', views.ExerciseSuggestionView.as_view(), name='e_suggest'),
@@ -23,6 +23,5 @@ urlpatterns = [
     path('recent-workouts/', views.RecentWorkoutsView.as_view(), name='recent_workouts'),
     path('get-exercise-formset/', views.get_exercise_formset, name='get_exercise_formset'),
     path('profile/', views.profile, name='profile'),
-    path('progress/', views.ProgressView.as_view(), name='progress'),
     path('progress/data/', views.ProgressDataView.as_view(), name='progress_data'),
 ]

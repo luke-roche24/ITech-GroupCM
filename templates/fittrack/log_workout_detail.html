@@ -55,28 +55,6 @@
 
             <button type="submit" class="btn btn-accent mb-4">Save Workout</button>
         </form>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Add Another Exercise</h4>
-            </div>
-            <div class="card-body">
-                <div class="form-group row">
-                    <label for="exercise-select" class="col-sm-2 col-form-label">Select Exercise:</label>
-                    <div class="col-sm-8">
-                        <select id="exercise-select" class="form-control">
-                            <option value="">---------</option>
-                            {% for ex in all_exercises %}
-                                <option value="{{ ex.id }}">{{ ex.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <button type="button" id="add-exercise-btn" class="btn btn-primary">Add Exercise</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     {% else %}
         <div class="alert alert-info">Select a workout above to log its exercises.</div>
     {% endif %}
