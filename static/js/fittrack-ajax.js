@@ -1,5 +1,5 @@
 
-(function ($) {
+$(document).ready(function ($) {
   'use strict';
 
   // ---- Helpers ------------------------------------------------------------
@@ -361,7 +361,10 @@
       totalFormsInput.val(totalForms + 1);
   });
 
-    
+  
+  
+  
+
   $(function () {
     console.log('Fittrack UI loaded');
   });

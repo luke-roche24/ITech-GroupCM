@@ -15,32 +15,33 @@
             <div class="card-body">
                 <h5 class="card-title fw-bold">Weekly Schedule</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><strong class="me-2">M</strong> Workout 1</span>
-                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
-                    </li>
-                    <li class="list-group-item text-muted">
-                        <strong class="me-2">T</strong> + Add Workout
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><strong class="me-2">W</strong> Workout 2</span>
-                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><strong class="me-2">T</strong> Workout 3</span>
-                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><strong class="me-2">F</strong> Workout 4</span>
-                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
-                    </li>
-                    <li class="list-group-item text-muted">
-                        <strong class="me-2">S</strong> + Add Workout
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><strong class="me-2">S</strong> Workout 5</span>
-                        <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
-                    </li>
+                    {% for day in schedule_by_day %}
+                        {% if not day.workouts %}
+                            <li class="list-group-item">
+                                <strong class="me-2">{{ day.day_let }}</strong>
+                                <form role="form" class="d-flex w-200" id="choose_workout" method="post">
+                                    {% csrf_token %}
+                                    <div class="input-group w-100">
+                                        {{ form.as_p }}
+                                        <div class="input-group-append">
+                                            <button class="btn btn-accent" type="submit" name="day_num" value="{{ day.day_num }}">Select Workout</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><strong class="me-2">{{ day.day_let }}</strong>
+                                {% for planned in day.workouts %}
+                                    {{ planned.workout.name }}
+                                {% endfor %}
+                                </span>
+                                <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                   
                 </ul>
             </div>
         </div>

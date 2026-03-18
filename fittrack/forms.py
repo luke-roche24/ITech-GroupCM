@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from fittrack.models import Exercise, Workout, SetLog, UserProfile
+from fittrack.models import Exercise, Workout, SetLog, UserProfile, PlannedWorkout
 from django.contrib.auth.password_validation import validate_password
 from fittrack.models import UserProfile, SECURITY_QUESTIONS
 
@@ -259,3 +259,17 @@ class ChangePasswordForm(forms.Form):
         if p1 and p2 and p1 != p2:
             raise forms.ValidationError("New passwords do not match.")
         return cleaned_data
+
+
+class AddToPlanForm(forms.Form):
+    workout = forms.ModelChoiceField(
+        queryset=Workout.objects.none(),
+        widget=forms.Select(attrs={'class': 'searchable-select'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user:
+            self.fields['workout'].queryset = Workout.objects.filter(owner=user)

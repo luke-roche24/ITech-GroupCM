@@ -78,6 +78,34 @@ class SetLog(models.Model):
 
     def __str__(self):
         return f"Set {self.set_num}: {self.exercise.name}"
+    
+
+
+
+class PlannedWorkout(models.Model):
+
+    DAYS_OF_WEEK = [
+        (0, 'M'),
+        (1, 'T'),
+        (2, 'W'),
+        (3, 'T'),
+        (4, 'F'),
+        (5, 'S'),
+        (6, 'S'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='planned_workouts')
+    workout = models.ForeignKey(Workout, on_delete=models.CASCADE)
+    day = models.IntegerField(choices=DAYS_OF_WEEK)
+    #order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ['day']
+        unique_together = ['user', 'day']
+
+    def __str__(self):
+        return f"{self.day}: {self.workout.name}"
+    
 
 class Friendship(models.Model):
     user_a = models.ForeignKey(User, related_name='friendships_initiated', on_delete=models.CASCADE)

@@ -527,16 +527,28 @@
 
 
 
-   .list-group-item:hover {
+   <<<<<<< HEAD .list-group-item:hover {
        background: var(--bg-card-hover);
        border-color: var(--accent);
        position: relative;
        z-index: 1;
    }
 
+   =======@keyframes ft-warmFlash {
+       0% {
+           background-color: rgba(var(--accent-rgb), 0.28);
+       }
 
+       60% {
+           background-color: rgba(var(--accent-rgb), 0.14);
+       }
 
-   .list-group-item.active {
+       100% {
+           background-color: rgba(var(--accent-rgb), 0.12);
+       }
+   }
+
+   >>>>>>>main .list-group-item.active {
        background-color: rgba(var(--accent-rgb), 0.12);
        border-color: rgba(var(--accent-rgb), 0.25);
        color: #000;
@@ -670,4 +682,9 @@
 
    .list-group-item.text-muted {
        color: var(--text-muted) !important;
+   }
+
+   *:focus-visible {
+       outline: 2px solid #58a6ff;
+       outline-offset: 2px;
    }
