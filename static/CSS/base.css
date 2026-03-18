@@ -248,11 +248,23 @@
 
        color:#000;
 
+       overflow: hidden;
+
        padding: 1.5rem;
 
        transition: border-color 0.2s, transform 0.2s;
 
    }
+
+   .ft-card-2 .list-group-item:first-child {
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+    }
+
+    .ft-card-2 .list-group-item:last-child {
+        border-bottom-left-radius: inherit;
+        border-bottom-right-radius: inherit;
+    }
 
    .ft-card:hover {
        border-color: var(--accent);
@@ -277,8 +289,9 @@
    .btn-accent {
         display: inline-block;
         background: var(--accent);
+        border-color: #000;
         color: #000;
-        border: none;
+        border: 1px solid #000;
         padding: 0.55rem 1.5rem;
         border-radius: 8px;
         font-weight: 500;
@@ -288,14 +301,14 @@
 
 
 
-    .btn-accent:hover { background: var(--accent-dim); transform: translateY(-1px); }
+    .btn-accent:hover { background: #000; border: 1px solid #fff; color: #fff; transform: translateY(-1px); }
     .btn-accent:focus { outline: none; box-shadow: 0 0 0 3px rgba(0,230,118,0.12); }
    
     .btn-accent-del {
         display: inline-block;
         background: var(--danger);
         color: #000;
-        border: none;
+        border: 2px solid #000;
         padding: 0.55rem 1.5rem;
         border-radius: 8px;
         font-weight: 500;
@@ -304,13 +317,13 @@
     }
 
 
-    .btn-accent-del:hover { background: #ff1744; transform: translateY(-1px); }
+    .btn-accent-del:hover { background: #000; border: 1px solid #fff; color: #fff; transform: translateY(-1px); }
     .btn-accent-del:focus { outline: none; box-shadow: 0 0 0 3px rgba(0,230,118,0.12); }
     
     .btn-neutral {
         background: #fff;
         color: #000;
-        border: 1px solid #000;
+        border: 2px solid #000;
         padding: 0.55rem 1.5rem;
         border-radius: 8px;
         font-weight: 500;
@@ -319,7 +332,9 @@
     }
 
     .btn-neutral:hover {
-        background: #e6e6e6;
+        background: #000;
+        border: 1px solid #fff;
+        color: #fff;
         border-color: #000;
         transform: translateY(-1px);
     }
@@ -398,7 +413,7 @@
     .workout-card {
         background: var(--accent);
         color: #000;
-        border: none;
+        border: 1px solid #000;
         border-radius: 8px;
         font-weight: 500;
         transition: all 0.15s ease;
@@ -406,7 +421,9 @@
     }
 
     a:hover .workout-card {
-        background: var(--accent-dim);
+        background: #000;
+        border: 1px solid #fff;
+        color: #fff;
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
@@ -439,6 +456,12 @@
 
 
    /* Forms */
+
+   .dark-form {
+    background-color: #f0f0f0;   /* changes the background */
+    color: #333;                  /* changes the text color */
+    border: 2px solid #007bff;    /* changes the border */
+    }
 
    .form-control-2,
    .form-select-2 {
@@ -534,6 +557,11 @@
        font-size: 0.87rem;
    }
 
+
+    select.form-control,
+    select {
+        border-radius: 20px;
+    }
    /* Lists */
 
 
@@ -577,7 +605,7 @@
        }
    }
 
-   >>>>>>>main .list-group-item.active {
+    main .list-group-item.active {
        background-color: rgba(var(--accent-rgb), 0.12);
        border-color: rgba(var(--accent-rgb), 0.25);
        color: #000;
@@ -717,3 +745,5 @@
        outline: 2px solid #58a6ff;
        outline-offset: 2px;
    }
+
+   

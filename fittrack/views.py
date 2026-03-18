@@ -582,6 +582,7 @@ def profile(request):
 class CurrentPlanView(LoginRequiredMixin, View):
 
     def get(self, request):
+
         planned_workouts = m.PlannedWorkout.objects.filter(
             user=request.user
             ).order_by('day').select_related('workout').prefetch_related(
@@ -607,14 +608,31 @@ class CurrentPlanView(LoginRequiredMixin, View):
             'schedule_by_day': schedule_by_day,
             'form':form,
             'workouts': planned_workouts,
+            'choose_workout': ChooseWorkoutForm(user=request.user),
         }
 
         return render(request, 'fittrack/current.html', context=context_dict)
     
     def post(self, request):
+        
+        if 'delete_planned_id' in request.POST:
+            planned_id = request.POST.get('delete_planned_id')
+            try:
+                planned = m.PlannedWorkout.objects.get(id=planned_id, user=request.user)
+                planned.delete()
+            except m.PlannedWorkout.DoesNotExist:
+                pass
+            return redirect('fittrack:current')
+
+        form = ChooseWorkoutForm(request.POST, user=request.user)
+
+        if form.is_valid():
+            selected_workout = form.cleaned_data['workout']
+            return redirect('fittrack:log_workout_detail', workout_id=selected_workout.id)
+           
+        
         day_num = request.POST.get('day_num')
         form = AddToPlanForm(request.POST, user=request.user)
-        
         if form.is_valid():
             workout = form.cleaned_data['workout']
             m.PlannedWorkout.objects.create(

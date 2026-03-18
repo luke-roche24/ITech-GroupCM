@@ -38,7 +38,7 @@ class WorkoutForm(forms.ModelForm):
 class ChooseWorkoutForm(forms.Form):
     workout = forms.ModelChoiceField(
         queryset=Workout.objects.none(),
-        widget=forms.Select(attrs={'class': 'custom-select'})
+        widget=forms.Select(attrs={'class': 'form-control custom-select'})
     )
 
     def __init__(self, *args, **kwargs):
@@ -264,7 +264,7 @@ class ChangePasswordForm(forms.Form):
 class AddToPlanForm(forms.Form):
     workout = forms.ModelChoiceField(
         queryset=Workout.objects.none(),
-        widget=forms.Select(attrs={'class': 'searchable-select'})
+        widget=forms.Select(attrs={'class': 'form-control searchable-select'})
     )
 
     def __init__(self, *args, **kwargs):

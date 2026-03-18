@@ -14,15 +14,16 @@
         <div class="ft-card-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title fw-bold">Weekly Schedule</h5>
-                <ul class="list-group list-group-flush">
+                <ul class="list-group">
                     {% for day in schedule_by_day %}
                         {% if not day.workouts %}
-                            <li class="list-group-item">
+                            <li class="list-group-item d-flex align-items-center mb-1">
                                 <strong class="me-2">{{ day.day_let }}</strong>
-                                <form role="form" class="d-flex w-200" id="choose_workout" method="post">
+                                <form role="form" class="d-flex justify-content-center flex-grow-1" id="choose_workout" method="post">
                                     {% csrf_token %}
-                                    <div class="input-group w-100">
-                                        {{ form.as_p }}
+                                    <div class="d-flex" style="gap: 0.5rem;">
+                                        {{ form.workout }}
+                                        
                                         <div class="input-group-append">
                                             <button class="btn btn-accent" type="submit" name="day_num" value="{{ day.day_num }}">Select Workout</button>
                                         </div>
@@ -31,13 +32,19 @@
                                 </form>
                             </li>
                         {% else %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span><strong class="me-2">{{ day.day_let }}</strong>
+                            <li class="list-group-item d-flex justify-content-between align-items-center mb-1">
+                                <strong class="d-block mb-2">{{ day.day_let }}</strong>
                                 {% for planned in day.workouts %}
-                                    {{ planned.workout.name }}
+                                    <span>{{ planned.workout.name }}</span>
+                                    <form method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="delete_planned_id" value="{{ planned.id }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                                    </form>
                                 {% endfor %}
                                 </span>
-                                <a href="#" class="btn btn-outline-dark btn-sm">Edit</a>
+                                
+                                
                             </li>
                         {% endif %}
                     {% endfor %}
@@ -46,15 +53,19 @@
             </div>
         </div>
 
-        <div class="card shadow-sm mt-3">
+        <div class="ft-card shadow-sm mt-3">
             <div class="card-body">
                 <h6 class="fw-bold">Browse Workouts</h6>
-                <select class="form-select mb-2">
-                    <option selected>Select a workout...</option>
-                </select>
-                <button class="btn btn-dark w-100">
-                    <i class="bi bi-play-fill me-1"></i>Log Workout
-                </button>
+                <form role="form" class="d-flex justify-content-center flex-grow-1" id="choose_workout" method="post" action="{% url 'fittrack:log_workout' %}">
+                    {% csrf_token %}
+                    <div class="d-flex" style="gap: 0.5rem;">
+                        {{ choose_workout.workout }}
+                        <div class="input-group-append">
+                            <button class="btn btn-accent" type="submit">Log Workout</button>
+                        </div>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>

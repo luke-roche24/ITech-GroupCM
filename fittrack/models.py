@@ -34,6 +34,13 @@ class Exercise(models.Model):
     def __str__(self):
         return self.name
     
+    def delete(self, *args, **kwargs):
+        affected_workout_ids = set(self.workoutexercise_set.values_list('workout_id', flat=True))
+        super().delete(*args, **kwargs)
+        for workout_id in affected_workout_ids:
+            if not WorkoutExercise.objects.filter(workout_id=workout_id).exists():
+                Workout.objects.filter(id=workout_id).delete()
+    
 class Workout(models.Model):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -55,6 +62,13 @@ class WorkoutExercise(models.Model):
 
     def __str__(self):
         return f"{self.workout.name} - {self.exercise.name}"
+    
+    def delete(self, *args, **kwargs):
+        workout = self.workout
+        super().delete(*args, **kwargs)
+
+        if not WorkoutExercise.objects.filter(workout=workout).exists():
+            workout.delete()
     
 
 class WorkoutSession(models.Model):
