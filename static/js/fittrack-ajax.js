@@ -384,4 +384,117 @@ $(document).ready(function ($) {
   $(function () {
     console.log('Fittrack UI loaded');
   });
+
+  // ---- Progress (chart) ---------------------------------------------------
+  (function initProgressPage() {
+    const $select = $('#exercise-select');
+    const $limit = $('#limit-input');
+    const $lastTrained = $('#last-trained');
+    const $pb = $('#pb');
+    const $pbDate = $('#pb-date');
+    const $empty = $('#chart-empty');
+    const $wrap = $('#chart-wrap');
+    const canvas = document.getElementById('progress-chart');
+
+    if (!$select.length || !$wrap.length || !canvas) return;
+
+    const progressUrl = $wrap.data('progress-url');
+    if (!progressUrl) return;
+
+    let chart = null;
+
+    function setStats(lastTrained, pb, pbDate) {
+      $lastTrained.text('Last Trained: ' + (lastTrained || '--'));
+      $pb.text('Personal Best: ' + (pb !== null && pb !== undefined ? pb : '--'));
+      $pbDate.text('PB Date: ' + (pbDate || '--'));
+    }
+
+    function showEmpty() {
+      if (chart) {
+        chart.destroy();
+        chart = null;
+      }
+      $empty.show();
+      $wrap.hide();
+    }
+
+    function showChart(labels, values, exerciseName) {
+      $empty.hide();
+      $wrap.show();
+
+      if (chart) chart.destroy();
+      chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: (exerciseName || 'Exercise') + ' (max weight)',
+            data: values,
+            borderColor: '#00e676',
+            backgroundColor: 'rgba(0,230,118,0.18)',
+            tension: 0.25,
+            fill: true,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: 'Weight' } },
+            x: { title: { display: true, text: 'Date' } }
+          },
+          plugins: { legend: { display: true } }
+        }
+      });
+    }
+
+    function refresh() {
+      const exerciseId = $select.val();
+      const limit = parseInt($limit.val(), 10) || 10;
+
+      setStats(null, null, null);
+
+      if (!exerciseId) {
+        showEmpty();
+        return;
+      }
+
+      if (!window.Chart) {
+        console.error('Chart.js not loaded on page');
+        showEmpty();
+        return;
+      }
+
+      $.getJSON(progressUrl, { exercise_id: exerciseId, limit: limit })
+        .done(function (json) {
+          setStats(json.last_trained, json.pb, json.pb_date);
+
+          const points = Array.isArray(json.points) ? json.points : [];
+          if (!points.length) {
+            showEmpty();
+            return;
+          }
+
+          const labels = points.map(p => p.date || '');
+          const values = points.map(p => p.max_weight);
+          const exName = json.exercise && json.exercise.name ? json.exercise.name : 'Exercise';
+          showChart(labels, values, exName);
+        })
+        .fail(function () {
+          showEmpty();
+        });
+    }
+
+    
+    if ($.fn && $.fn.select2) {
+      $select.select2({ width: 'resolve' });
+      $select.on('change', refresh);
+    } else {
+      $select.on('change', refresh);
+    }
+
+    $limit.on('change', refresh);
+    showEmpty();
+  })();
 })(jQuery);

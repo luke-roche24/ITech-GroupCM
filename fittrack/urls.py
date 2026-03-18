@@ -23,4 +23,6 @@ urlpatterns = [
     path('recent-workouts/', views.RecentWorkoutsView.as_view(), name='recent_workouts'),
     path('get-exercise-formset/', views.get_exercise_formset, name='get_exercise_formset'),
     path('profile/', views.profile, name='profile'),
+    path('progress/', views.ProgressView.as_view(), name='progress'),
+    path('progress/data/', views.ProgressDataView.as_view(), name='progress_data'),
 ]

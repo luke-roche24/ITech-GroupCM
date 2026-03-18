@@ -220,6 +220,24 @@
    }
 
 
+   #chart-wrap {
+    
+    height: 420px;
+
+    background: #ffffff;
+    
+    border-bottom-left-radius: 12px;
+    
+    border-bottom-right-radius: 12px;
+  
+  }
+  #chart-wrap canvas {
+    
+    width: 100% !important;
+    
+    height: 100% !important;
+    
+  }
 
    /* Cards */
 
@@ -269,6 +287,23 @@
    .ft-card:hover {
        border-color: var(--accent);
        transform: translateY(-2px);
+   }
+
+   /* Progress page chart: keep card static on hover (no green border/transform). */
+   .progress-chart-card:hover {
+       border-color: var(--border-color);
+       transform: none;
+   }
+
+   /* Progress page: make Select2 dropdown text darker/clearer. */
+   .progress-chart-card .select2-container--default .select2-selection__rendered {
+       color: #000 !important;
+   }
+   .progress-chart-card .select2-container--default .select2-selection__placeholder {
+       color: #000 !important;
+   }
+   .progress-chart-card .select2-container--default .select2-results__option {
+       color: #000 !important;
    }
 
    .ft-card-title {

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Max
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -400,7 +400,8 @@ def friends(request):
 
 @login_required
 def progress(request):
-    return render(request, 'fittrack/progress.html')
+    exercises = m.Exercise.objects.filter(owner=request.user).order_by("name")
+    return render(request, "fittrack/progress.html", {"exercises": exercises})
 
 
 def search(request):
@@ -648,5 +649,78 @@ class CurrentPlanView(LoginRequiredMixin, View):
 
         return redirect(reverse('fittrack:current'))
 
+
+class ProgressView(LoginRequiredMixin, View):
+    def get(self, request):
+        exercises = m.Exercise.objects.filter(owner=request.user).order_by("name")
+        return render(request, "fittrack/progress.html", {"exercises": exercises})
+    
+
+class ProgressDataView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        exercise_id = request.GET.get("exercise_id")
+
+        if not exercise_id:
+            return JsonResponse({"error": "Missing exercise_id"}, status=400)
+
+
+        try:
+            limit = int(request.GET.get("limit", 10))
+        except (TypeError, ValueError):
+            limit = 10
+        limit = max(1, min(limit, 50))
+
+        exercise = get_object_or_404(m.Exercise, pk=exercise_id, owner=request.user)
+
+        base_qs = (
+            m.SetLog.objects.filter(session__user=request.user, exercise=exercise)
+            .select_related("session")
+        )
+
+
+        per_session = (
+            base_qs.values("session_id", "session__date")
+            .annotate(max_weight=Max("weight"))
+            .order_by("-session__date")
+        )[:limit]
+
+        per_session = list(per_session)[::-1]
+
+        data_points = [
+            {
+                "session_id": row["session_id"],
+                "date": row["session__date"].date().isoformat() if row["session__date"] else None,
+                "max_weight": float(row["max_weight"]) if row["max_weight"] is not None else None,
+            }
+            for row in per_session
+        ]
+
+        pb_row = base_qs.aggregate(pb=Max("weight"))
+        pb = pb_row.get("pb")
+
+        last_trained_date = (
+            base_qs.order_by("-session__date").values_list("session__date", flat=True).first()
+        )
+
+        pb_date = None
+        if pb is not None:
+            pb_date = (
+                base_qs.filter(weight=pb)
+                .order_by("-session__date")
+                .values_list("session__date", flat=True)
+                .first()
+            )
+
+        return JsonResponse(
+            {
+                "exercise": {"id": exercise.id, "name": exercise.name},
+                "limit": limit,
+                "points": data_points,
+                "pb": float(pb) if pb is not None else None,
+                "pb_date": pb_date.date().isoformat() if pb_date else None,
+                "last_trained": last_trained_date.date().isoformat() if last_trained_date else None,
+            }
+        )
 
 
