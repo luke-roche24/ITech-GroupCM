@@ -18,7 +18,7 @@ from django.views.generic import ListView
 
 import fittrack.models as m
 from fittrack.models import Exercise, UserProfile, SECURITY_QUESTIONS
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 
 from .forms import (
     ExerciseForm, EditExerciseForm, WorkoutForm, ChooseWorkoutForm,
@@ -556,13 +556,21 @@ def profile(request):
 class CurrentPlanView(LoginRequiredMixin, View):
 
     def get(self, request):
-        planned_workouts = m.PlannedWorkout.objects.filter(user=request.user).order_by('day')
+        planned_workouts = m.PlannedWorkout.objects.filter(
+            user=request.user
+            ).order_by('day').select_related('workout').prefetch_related(
+                Prefetch(
+                    'workout__workoutexercise_set',
+                    queryset=m.WorkoutExercise.objects.select_related('exercise').order_by('order'),
+                    to_attr='exercise_details'
+                )
+            )
         days = m.PlannedWorkout.DAYS_OF_WEEK
         form = AddToPlanForm(user=request.user)
         
         schedule_by_day = []
         for day_num, day in days:
-            workouts_for_day = planned_workouts.filter(day=day_num)
+            workouts_for_day = [pw for pw in planned_workouts if pw.day == day_num]
             schedule_by_day.append({
                 'day_let': day,
                 'day_num': day_num,
@@ -571,7 +579,8 @@ class CurrentPlanView(LoginRequiredMixin, View):
 
         context_dict = {
             'schedule_by_day': schedule_by_day,
-            'form':form
+            'form':form,
+            'workouts': planned_workouts,
         }
 
         return render(request, 'fittrack/current.html', context=context_dict)

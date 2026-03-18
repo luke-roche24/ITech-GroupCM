@@ -11,7 +11,7 @@
 <div class="row g-4">
     <!-- Weekly Schedule -->
     <div class="col-md-5">
-        <div class="card shadow-sm">
+        <div class="ft-card-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title fw-bold">Weekly Schedule</h5>
                 <ul class="list-group list-group-flush">
@@ -61,42 +61,27 @@
 
     <!-- Log Cards -->
     <div class="col-md-7">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100 text-center">
-                    <div class="card-body d-flex align-items-center justify-content-center">
-                        <p class="text-muted mb-0">Log Workout 1</p>
+        <div class="row g-3 flex">
+            {% for day in schedule_by_day %}
+                {% for planned in day.workouts %}
+                    <div class="col-md-6">
+                        <a href="{% url 'fittrack:log_workout_detail' workout_id=planned.workout.id %}" class="d-block text-decoration-none h-100">
+                            <div class="card shadow-sm h-100 workout-card d-flex flex-column">
+                                <div class="card-body d-flex flex-column">
+                                    <p class="workout-name">{{ planned.workout.name }}</p>
+                                    <ul class="list-unstyled text-start exercise-list flex-grow-1">
+                                        {% for we in planned.workout.exercise_details %}
+                                            <li class="exercise-item">
+                                                {{ we.exercise.name }} - {{ we.sets }} x {{ we.reps }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100 text-center">
-                    <div class="card-body d-flex align-items-center justify-content-center">
-                        <p class="text-muted mb-0">Log Workout 2</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100 text-center">
-                    <div class="card-body d-flex align-items-center justify-content-center">
-                        <p class="text-muted mb-0">Log Workout 3</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100 text-center">
-                    <div class="card-body d-flex align-items-center justify-content-center">
-                        <p class="text-muted mb-0">Log Workout 4</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100 text-center">
-                    <div class="card-body d-flex align-items-center justify-content-center">
-                        <p class="text-muted mb-0">Log Workout 5</p>
-                    </div>
-                </div>
-            </div>
+                {% endfor %}
+            {% endfor %}
         </div>
     </div>
 </div>
