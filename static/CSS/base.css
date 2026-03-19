@@ -221,23 +221,24 @@
 
 
    #chart-wrap {
-    
-    height: 420px;
 
-    background: #ffffff;
-    
-    border-bottom-left-radius: 12px;
-    
-    border-bottom-right-radius: 12px;
-  
-  }
-  #chart-wrap canvas {
-    
-    width: 100% !important;
-    
-    height: 100% !important;
-    
-  }
+       height: 420px;
+
+       background: #ffffff;
+
+       border-bottom-left-radius: 12px;
+
+       border-bottom-right-radius: 12px;
+
+   }
+
+   #chart-wrap canvas {
+
+       width: 100% !important;
+
+       height: 100% !important;
+
+   }
 
    /* Cards */
 
@@ -264,7 +265,7 @@
 
        border-radius: 12px;
 
-       color:#000;
+       color: #000;
 
        overflow: hidden;
 
@@ -275,14 +276,14 @@
    }
 
    .ft-card-2 .list-group-item:first-child {
-        border-top-left-radius: inherit;
-        border-top-right-radius: inherit;
-    }
+       border-top-left-radius: inherit;
+       border-top-right-radius: inherit;
+   }
 
-    .ft-card-2 .list-group-item:last-child {
-        border-bottom-left-radius: inherit;
-        border-bottom-right-radius: inherit;
-    }
+   .ft-card-2 .list-group-item:last-child {
+       border-bottom-left-radius: inherit;
+       border-bottom-right-radius: inherit;
+   }
 
    .ft-card:hover {
        border-color: var(--accent);
@@ -299,9 +300,11 @@
    .progress-chart-card .select2-container--default .select2-selection__rendered {
        color: #000 !important;
    }
+
    .progress-chart-card .select2-container--default .select2-selection__placeholder {
        color: #000 !important;
    }
+
    .progress-chart-card .select2-container--default .select2-results__option {
        color: #000 !important;
    }
@@ -322,63 +325,82 @@
    /* Buttons */
 
    .btn-accent {
-        display: inline-block;
-        background: var(--accent);
-        border-color: #000;
-        color: #000;
-        border: 1px solid #000;
-        padding: 0.55rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.15s ease;
-    }
+       display: inline-block;
+       background: var(--accent);
+       border-color: #000;
+       color: #000;
+       border: 1px solid #000;
+       padding: 0.55rem 1.5rem;
+       border-radius: 8px;
+       font-weight: 500;
+       font-size: 0.9rem;
+       transition: all 0.15s ease;
+   }
 
 
 
-    .btn-accent:hover { background: #000; border: 1px solid #fff; color: #fff; transform: translateY(-1px); }
-    .btn-accent:focus { outline: none; box-shadow: 0 0 0 3px rgba(0,230,118,0.12); }
-   
-    .btn-accent-del {
-        display: inline-block;
-        background: var(--danger);
-        color: #000;
-        border: 2px solid #000;
-        padding: 0.55rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.15s ease;
-    }
+   .btn-accent:hover {
+       background: #000;
+       border: 1px solid #fff;
+       color: #fff;
+       transform: translateY(-1px);
+   }
+
+   .btn-accent:focus {
+       outline: none;
+       box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.12);
+   }
+
+   .btn-accent-del {
+       display: inline-block;
+       background: var(--danger);
+       color: #000;
+       border: 2px solid #000;
+       padding: 0.55rem 1.5rem;
+       border-radius: 8px;
+       font-weight: 500;
+       font-size: 0.9rem;
+       transition: all 0.15s ease;
+   }
 
 
-    .btn-accent-del:hover { background: #000; border: 1px solid #fff; color: #fff; transform: translateY(-1px); }
-    .btn-accent-del:focus { outline: none; box-shadow: 0 0 0 3px rgba(0,230,118,0.12); }
-    
-    .btn-neutral {
-        background: #fff;
-        color: #000;
-        border: 2px solid #000;
-        padding: 0.55rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.2s;
-    }
+   .btn-accent-del:hover {
+       background: #000;
+       border: 1px solid #fff;
+       color: #fff;
+       transform: translateY(-1px);
+   }
 
-    .btn-neutral:hover {
-        background: #000;
-        border: 1px solid #fff;
-        color: #fff;
-        border-color: #000;
-        transform: translateY(-1px);
-    }
+   .btn-accent-del:focus {
+       outline: none;
+       box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.12);
+   }
 
-    .btn-neutral:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
-    }
-    /*
+   .btn-neutral {
+       background: #fff;
+       color: #000;
+       border: 2px solid #000;
+       padding: 0.55rem 1.5rem;
+       border-radius: 8px;
+       font-weight: 500;
+       font-size: 0.9rem;
+       transition: all 0.2s;
+   }
+
+   .btn-neutral:hover {
+       background: #000;
+       border: 1px solid #fff;
+       color: #fff;
+       border-color: #000;
+       transform: translateY(-1px);
+   }
+
+   .btn-neutral:focus {
+       outline: none;
+       box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+   }
+
+   /*
     .btn-accent {
 
        background: var(--accent);
@@ -445,58 +467,61 @@
        color: var(--text-primary);
    }
 
-    .workout-card {
-        background: var(--accent);
-        color: #000;
-        border: 1px solid #000;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.15s ease;
-        overflow: hidden;
-    }
+   .workout-card {
+       background: var(--accent);
+       color: #000;
+       border: 1px solid #000;
+       border-radius: 8px;
+       font-weight: 500;
+       transition: all 0.15s ease;
+       overflow: hidden;
+   }
 
-    a:hover .workout-card {
-        background: #000;
-        border: 1px solid #fff;
-        color: #fff;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
+   a:hover .workout-card {
+       background: #000;
+       border: 1px solid #fff;
+       color: #fff;
+       transform: translateY(-1px);
+       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   }
 
-    .workout-card .card-body {
-        padding: 0.75rem 1rem;
-    }
+   .workout-card .card-body {
+       padding: 0.75rem 1rem;
+   }
 
-    .workout-name {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-    }
+   .workout-name {
+       font-size: 1.2rem;
+       margin-bottom: 0.5rem;
+       font-weight: 600;
+   }
 
-    .exercise-list {
-        margin-bottom: 0;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
+   .exercise-list {
+       margin-bottom: 0;
+       font-size: 0.9rem;
+       line-height: 1.4;
+   }
 
-    .exercise-item {
-        padding: 0.1rem 0;
-    }
+   .exercise-item {
+       padding: 0.1rem 0;
+   }
 
-    a:focus .workout-card {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(0,230,118,0.12);
-    }
+   a:focus .workout-card {
+       outline: none;
+       box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.12);
+   }
 
 
 
    /* Forms */
 
    .dark-form {
-    background-color: #f0f0f0;   /* changes the background */
-    color: #333;                  /* changes the text color */
-    border: 2px solid #007bff;    /* changes the border */
-    }
+       background-color: #f0f0f0;
+       /* changes the background */
+       color: #333;
+       /* changes the text color */
+       border: 2px solid #007bff;
+       /* changes the border */
+   }
 
    .form-control-2,
    .form-select-2 {
@@ -593,10 +618,11 @@
    }
 
 
-    select.form-control,
-    select {
-        border-radius: 20px;
-    }
+   select.form-control,
+   select {
+       border-radius: 20px;
+   }
+
    /* Lists */
 
 
@@ -640,7 +666,7 @@
        }
    }
 
-    main .list-group-item.active {
+   main .list-group-item.active {
        background-color: rgba(var(--accent-rgb), 0.12);
        border-color: rgba(var(--accent-rgb), 0.25);
        color: #000;
@@ -781,4 +807,7 @@
        outline-offset: 2px;
    }
 
-   
+   *:focus-visible {
+       outline: 2px solid #58a6ff;
+       outline-offset: 2px;
+   }

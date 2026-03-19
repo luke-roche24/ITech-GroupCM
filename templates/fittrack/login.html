@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block auth_content %}
-<div class="auth-wrapper">
+<main class="auth-wrapper">
     <div class="auth-card">
         <a href="{% url 'fittrack:index' %}" class="auth-close" aria-label="Back to home"><i class="bi bi-x-lg"></i></a>
         <div class="auth-body">
@@ -52,7 +52,7 @@
             <div class="auth-footer">Don't have an account? <a href="{% url 'fittrack:register' %}">Register</a></div>
         </div>
     </div>
-</div>
+</main>
 {% endblock %}
 
 {% block extra_js %}
