@@ -12,7 +12,11 @@ from django.views.generic import ListView
 from .forms import ChooseWorkoutForm, WorkoutForm, get_set_formset
 
 
+# Handle creating and deleting workouts. 
+# It uses an atomic transaction when saving new workouts to ensure that if any 
+# exercise fails to save, the entire workout creation is rolled back safely.
 class WorkoutView(LoginRequiredMixin, View):
+
     def get(self, request):
         workout_list = m.Workout.objects.filter(owner=request.user).order_by("name")
         exercise_list = m.Exercise.objects.filter(owner=request.user).order_by("name")
@@ -31,7 +35,7 @@ class WorkoutView(LoginRequiredMixin, View):
 
             workout.delete()
 
-            if request.is_ajax() or request.headers.get("x-requested-with") == "XMLHttpRequest":
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 return JsonResponse({"success": True, "workout_id": int(workout_id)})
             return redirect("fittrack:workouts")
 
@@ -101,7 +105,7 @@ class WorkoutView(LoginRequiredMixin, View):
                 "fittrack/workout_list_items.html", {"workout": workout}, request=request
             )
 
-            if request.is_ajax() or request.headers.get("x-requested-with") == "XMLHttpRequest":
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 return JsonResponse(
                     {
                         "success": True,
@@ -115,6 +119,7 @@ class WorkoutView(LoginRequiredMixin, View):
 
 
 class WorkoutSuggestionView(LoginRequiredMixin, View):
+
     def get(self, request):
         suggestion = request.GET.get("suggestion", "").strip()
 
@@ -129,6 +134,7 @@ class WorkoutSuggestionView(LoginRequiredMixin, View):
 
 
 class LogWorkoutView(LoginRequiredMixin, View):
+
     def get(self, request):
         context_dict = {"choose_workout": ChooseWorkoutForm(user=request.user)}
         return render(request, "fittrack/log_workout.html", context=context_dict)
@@ -144,7 +150,11 @@ class LogWorkoutView(LoginRequiredMixin, View):
         return render(request, "fittrack/log_workout.html", {"choose_workout": form})
 
 
+# This view manages the complex process of logging a completed workout session.
+# It uses dynamically generated formsets for each exercise in the workout 
+# so users can log multiple sets, reps, and weights simultaneously.
 class LogWorkoutSetsView(LoginRequiredMixin, View):
+
     def get(self, request, workout_id):
         workout = get_object_or_404(m.Workout, id=workout_id, owner=request.user)
         exercises = m.WorkoutExercise.objects.filter(workout=workout).order_by("order")
@@ -205,6 +215,9 @@ class LogWorkoutSetsView(LoginRequiredMixin, View):
         return render(request, "fittrack/log_workout_detail.html", context=context_dict)
 
 
+# Display the user's 5 most recent workout sessions.
+# We use prefetch_related and select_related here to optimize database queries 
+# and prevent the N+1 query problem when loading the associated sets.
 class RecentWorkoutsView(LoginRequiredMixin, ListView):
     model = m.WorkoutSession
     template_name = "fittrack/recent_workouts.html"

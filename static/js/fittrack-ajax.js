@@ -1,4 +1,4 @@
-
+// AJAX handler to delete workout and update the UI dynamically
 $(document).ready(function ($) {
   'use strict';
 

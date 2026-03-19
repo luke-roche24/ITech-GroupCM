@@ -9,7 +9,10 @@ from django.views import View
 from .forms import EditExerciseForm, ExerciseForm, get_set_formset
 
 
+# Handle adding, editing, and deleting exercises. 
+# Also making sure users can only mess with their own exercises.
 class ExerciseView(LoginRequiredMixin, View):
+
     def get(self, request):
         exercise_list = m.Exercise.objects.filter(owner=request.user).order_by("name")
         form = ExerciseForm()
@@ -62,6 +65,7 @@ class ExerciseView(LoginRequiredMixin, View):
 
 
 class ExerciseSuggestionView(LoginRequiredMixin, View):
+
     def get(self, request):
         suggestion = request.GET.get("suggestion", "").strip()
 
@@ -75,6 +79,8 @@ class ExerciseSuggestionView(LoginRequiredMixin, View):
         return render(request, "fittrack/exercise_list_items.html", {"exercises": exercise_list})
 
 
+# Quick helper to search exercises. 
+# Added a max_results limit just in case the list gets too long.
 def get_exercise_list(max_results=0, starts_with=""):
     exercise_list = []
 
@@ -88,13 +94,17 @@ def get_exercise_list(max_results=0, starts_with=""):
     return exercise_list
 
 
+# Create a mock object to satisfy Django's formset expectations. 
+# This is needed because we are dynamically injecting new exercise rows via AJAX before saving to the database.
 class _DummyExerciseForFormset:
+
     def __init__(self, base_exercise, sets):
         self.sets = sets
         self.id = base_exercise.id
         self.name = base_exercise.name
 
 
+# AJAX endpoint: Generates and returns a fresh HTML formset card when a user adds an exercise to their workout builder.
 def get_exercise_formset(request):
     exercise_id = request.GET.get("exercise_id")
     if not exercise_id:
