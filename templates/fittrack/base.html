@@ -1,25 +1,28 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FitTrack - A flexible workout tracker to create exercises, build workouts, log sessions and track progress.">
     <title>{% block title %}FitTrack{% endblock %}</title>
 
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    
+
 
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
     {% if user.is_authenticated %}
-    <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('show')">
+    <button class="mobile-toggle" aria-label="Toggle navigation"
+        onclick="document.getElementById('sidebar').classList.toggle('show')">
         <i class="bi bi-list" style="font-size:1.2rem;"></i>
     </button>
 
@@ -27,48 +30,55 @@
         <div class="sidebar-brand">FITTRACK</div>
         <div class="sidebar-nav">
             <div class="nav-label">Main</div>
-            <a href="{% url 'fittrack:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <a href="{% url 'fittrack:dashboard' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                 <i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
-            <a href="{% url 'fittrack:exercises' %}" class="nav-link {% if request.resolver_match.url_name == 'exercises' %}active{% endif %}">
+            <a href="{% url 'fittrack:exercises' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'exercises' %}active{% endif %}">
                 <i class="bi bi-lightning-charge-fill"></i> Your Exercises</a>
-            <a href="{% url 'fittrack:workouts' %}" class="nav-link {% if request.resolver_match.url_name == 'workouts' %}active{% endif %}">
+            <a href="{% url 'fittrack:workouts' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'workouts' %}active{% endif %}">
                 <i class="bi bi-calendar2-week-fill"></i> Your Workouts</a>
-            <a href="{% url 'fittrack:current' %}" class="nav-link {% if request.resolver_match.url_name == 'current' %}active{% endif %}">
+            <a href="{% url 'fittrack:current' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'current' %}active{% endif %}">
                 <i class="bi bi-clipboard2-check-fill"></i> Current Plan</a>
 
             <div class="nav-label">Tracking</div>
-            <a href="{% url 'fittrack:progress' %}" class="nav-link {% if request.resolver_match.url_name == 'progress' %}active{% endif %}">
+            <a href="{% url 'fittrack:progress' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'progress' %}active{% endif %}">
                 <i class="bi bi-graph-up-arrow"></i> Progress</a>
-            <a href="{% url 'fittrack:recent_workouts' %}" class="nav-link {% if request.resolver_match.url_name == 'recent_workouts' %}active{% endif %}">
+            <a href="{% url 'fittrack:recent_workouts' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'recent_workouts' %}active{% endif %}">
                 <i class="bi bi-clock-history"></i> Recent Workouts</a>
 
 
             <div class="nav-label">Social</div>
-            <a href="{% url 'fittrack:friends' %}" class="nav-link {% if request.resolver_match.url_name == 'friends' %}active{% endif %}">
+            <a href="{% url 'fittrack:friends' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'friends' %}active{% endif %}">
                 <i class="bi bi-people-fill"></i> Friends</a>
 
             <div class="nav-label">Account</div>
-            <a href="{% url 'fittrack:profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <a href="{% url 'fittrack:profile' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
                 <i class="bi bi-person-circle"></i> Profile</a>
             <a href="{% url 'fittrack:logout' %}" class="nav-link logout-link">
                 <i class="bi bi-box-arrow-left"></i> Logout</a>
         </div>
     </nav>
 
-    <div class="main-content">
+    <main class="main-content">
         {% if messages %}{% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3" role="alert">
             {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>{% endfor %}{% endif %}
         {% block content %}{% endblock %}
-    </div>
+    </main>
 
     {% else %}
     {% block auth_content %}{% endblock %}
     {% endif %}
 
     <script src="{% static 'JS/jquery-3.3.1.min.js' %}" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  <!-- full version -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -79,4 +89,5 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>
