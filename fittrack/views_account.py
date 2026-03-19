@@ -13,7 +13,7 @@ from .forms import (
     UserRegistrationForm,
 )
 
-
+# Function to handle user registration and redirection
 def user_register(request):
     if request.user.is_authenticated:
         return redirect("fittrack:dashboard")
@@ -28,7 +28,7 @@ def user_register(request):
         form = UserRegistrationForm()
     return render(request, "fittrack/register.html", {"form": form})
 
-
+# Function to handle user login authentication
 def user_login(request):
     if request.user.is_authenticated:
         return redirect("fittrack:dashboard")
