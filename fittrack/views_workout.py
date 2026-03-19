@@ -217,10 +217,10 @@ class RecentWorkoutsView(LoginRequiredMixin, ListView):
             .prefetch_related(
                 Prefetch(
                     "setlog_set",
-                    queryset=m.SetLog.objects.select_related("exercise"),
+                    queryset=m.SetLog.objects.select_related("exercise")
+                                             .order_by("exercise_id", "set_num"),
                     to_attr="prefetched_sets",
                 )
             )
             .order_by("-date")[:5]
         )
-
